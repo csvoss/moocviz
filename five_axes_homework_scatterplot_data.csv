@@ -1,0 +1,155 @@
+problem_id,problem_name,problem_url,problem_week,Average_number_of_attempts,Average_duration,Percentage_Correct,Average_number_of_resources,Number_of_students
+2,"Impedance of Circuit with L, R, & C",https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_10/Homework/,10,2.91,1909.76,0.96,12.43,7051
+10,Magnitude & Angle of Voltage-Transfer Ratio in First-Order Circuits,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_10/Homework/,10,3.26,1286.62,0.98,8.56,7075
+13,Inductor & Capacitor in Output-Coupling Network of a Radio Transmitter,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_10/Homework/,10,4.1,1795.72,0.94,11.29,5766
+20,Parallel Resonant Tank Circuit,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_11/Homework/,11,5.65,4053.67,0.9,19.58,5726
+27,Behavior of a NewFET,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_6/Homework/,6,4.29,4467.86,0.94,24.74,9042
+37,Graphical Model of an Inverter,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_3/Digital_and_Nonlinear/,3,4.31,3084.14,0.9,18.48,13462
+41,Measuring Light Using a Photodiode and Op-Amp,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_12/Homework/,12,2.24,1986.48,0.97,9.43,4962
+44,"Damped Sinusoids in L, R, and C",https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_11/Homework/,11,1.89,1508.81,1,7.08,5996
+48,Parallel Resonant Tank Circuit,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_11/Homework/,11,3.2,1833.63,0.94,10.14,5309
+50,"Damped Sinusoids in L, R, and C",https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_11/Homework/,11,4.12,1865.11,0.95,10.82,5404
+56,Parallel Resonant Tank Circuit,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_11/Homework/,11,5.6,2642.65,0.92,15.12,5457
+57,Graphical Model of an Inverter,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_3/Digital_and_Nonlinear/,3,6.05,5088.98,0.8,30.21,13449
+64,"Impedance of Circuit with L, R, & C",https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_10/Homework/,10,3.18,2023.8,0.96,12.48,6935
+66,Current Source Controlled By Op-Amp,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_12/Homework/,12,3.67,2293.44,0.94,12.33,5214
+67,Behavior of a NewFET,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_6/Homework/,6,6.56,8799.28,0.85,47.49,9033
+73,Series and Parallel Inductors,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_7/Homework/,7,2.19,771.1,0.99,4.33,8770
+79,Series and Parallel Inductors,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_7/Homework/,7,1.82,560.84,0.99,3.08,8770
+80,Power Consumption of a System of Logic Gates,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_3/Digital_and_Nonlinear/,3,3.92,2264.61,0.94,13.05,13384
+94,Filtering Signals Using Op-Amps,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_12/Homework/,12,1.52,782.4,0.98,4.9,4424
+97,"Damped Sinusoids in L, R, and C",https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_11/Homework/,11,4.25,1738.54,0.96,9.51,5562
+110,Inductor & Capacitor in Output-Coupling Network of a Radio Transmitter,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_10/Homework/,10,3.01,2411.14,0.95,10.75,6186
+111,Circuit Logic Diagrams,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_2/Linearity%2C_Thevenin_and_Norton%3B_Digital/,2,1.88,654.46,0.99,3.81,17420
+112,Measuring Light Using a Photodiode and Op-Amp,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_12/Homework/,12,3.76,2098.2,0.94,10.71,4762
+114,Inductor & Capacitor in Output-Coupling Network of a Radio Transmitter,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_10/Homework/,10,2.74,2280.7,0.94,11.02,5862
+116,Current Source Controlled By Op-Amp,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_12/Homework/,12,2.55,2056.13,0.97,10.56,5359
+121,Circuit Logic Diagrams,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_2/Linearity%2C_Thevenin_and_Norton%3B_Digital/,2,1.84,615.03,0.99,3.41,17423
+126,Problems with Lead Inductance,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_7/Homework/,7,7.23,7059.14,0.87,35.28,8451
+131,Logic Gates Made of MOSFETs as Ideal Switches,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_3/Digital_and_Nonlinear/,3,3.77,4782.36,0.88,31,14655
+135,Circuit Logic Diagrams,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_2/Linearity%2C_Thevenin_and_Norton%3B_Digital/,2,1.91,645.4,0.99,3.7,17421
+136,Inductor & Capacitor in Output-Coupling Network of a Radio Transmitter,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_10/Homework/,10,3.04,1550.05,0.95,9.56,5730
+138,Logic Gates Made of MOSFETs as Ideal Switches,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_3/Digital_and_Nonlinear/,3,2.79,1892.29,0.96,12.02,14670
+139,"Impedance of Circuit with L, R, & C",https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_10/Homework/,10,1.41,522,1,2.9,7033
+145,Parallel Resonant Tank Circuit,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_11/Homework/,11,3.57,1712.02,0.96,9.49,5643
+151,Units of Energy,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_1/Basic_Circuit_Analysis/,1,2.45,1404.64,0.94,7.01,26709
+156,Problems with Lead Inductance,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_7/Homework/,7,4.7,3463.39,0.95,18.79,8458
+160,Graphical Model of an Inverter,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_3/Digital_and_Nonlinear/,3,8.52,5024.88,0.81,29.7,13455
+161,Parallel Resonant Tank Circuit,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_11/Homework/,11,2.04,991.83,0.98,5.72,5488
+164,Differing Power Output from Series & Parallel Circuits,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_1/Basic_Circuit_Analysis/,1,5.4,3064.56,0.86,16.86,23162
+165,Graphical Model of an Inverter,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_3/Digital_and_Nonlinear/,3,4.33,2814.43,0.92,16.7,13465
+166,Logic Gates Made of MOSFETs as Ideal Switches,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_3/Digital_and_Nonlinear/,3,3.11,4253.54,0.89,27.08,14667
+169,Series and Parallel Capacitors,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_6/Homework/,6,2.47,1203.55,0.99,7.13,9303
+174,Logic Gates Made of MOSFETs as Ideal Switches,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_3/Digital_and_Nonlinear/,3,2.57,1666.7,0.97,10.51,14678
+176,Inductor & Capacitor in Output-Coupling Network of a Radio Transmitter,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_10/Homework/,10,4.38,3183.2,0.92,14.78,5995
+179,Differing Power Output from Series & Parallel Circuits,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_1/Basic_Circuit_Analysis/,1,2.29,1196.41,0.96,6.71,23169
+180,Measuring Light Using a Photodiode and Op-Amp,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_12/Homework/,12,6.28,3042.77,0.9,15.29,4460
+181,Series and Parallel Inductors,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_7/Homework/,7,1.63,475.79,1,2.49,8770
+182,Behavior of a NewFET,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_6/Homework/,6,6.4,7300.16,0.89,39.68,9036
+183,"Impedance of Circuit with L, R, & C",https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_10/Homework/,10,1.85,703.1,0.99,4.72,7046
+187,Behavior of a NewFET,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_6/Homework/,6,6.39,4852.65,0.9,27.13,9040
+191,Differing Power Output from Series & Parallel Circuits,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_1/Basic_Circuit_Analysis/,1,3.37,2929.74,0.86,16.42,23151
+199,Series and Parallel Inductors,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_7/Homework/,7,2.02,629.5,0.99,3.62,8769
+209,"Impedance of Circuit with L, R, & C",https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_10/Homework/,10,3,1794.35,0.97,11.93,7004
+229,Circuit Logic Diagrams,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_2/Linearity%2C_Thevenin_and_Norton%3B_Digital/,2,1.9,656.75,0.99,3.75,17421
+230,"Circuit with L, C, R, and V",https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_9/Homework/,9,6.32,5057.32,0.87,24.05,6350
+236,Circuit Logic Diagrams,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_2/Linearity%2C_Thevenin_and_Norton%3B_Digital/,2,1.84,624.26,0.99,3.48,17422
+239,Circuit Logic Diagrams,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_2/Linearity%2C_Thevenin_and_Norton%3B_Digital/,2,1.93,620.46,0.99,3.39,17425
+241,Problems with Lead Inductance,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_7/Homework/,7,4.04,4036.72,0.96,21.08,8451
+251,Logic Gates Made of MOSFETs as Ideal Switches,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_3/Digital_and_Nonlinear/,3,3.58,4973.58,0.87,32.5,14654
+252,Duality in Series & Parallel Circuits,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_1/Basic_Circuit_Analysis/,1,2.53,1294.02,0.94,7.49,24920
+253,"Impedance of Circuit with L, R, & C",https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_10/Homework/,10,2.18,1559.89,0.97,10.43,7036
+255,Logic Gates Made of MOSFETs as Ideal Switches,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_3/Digital_and_Nonlinear/,3,3.79,4729.2,0.87,30.13,14664
+259,"Impedance of Circuit with L, R, & C",https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_10/Homework/,10,1.48,629.05,1,3.32,7032
+262,"Impedance of Circuit with L, R, & C",https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_10/Homework/,10,4.27,2520.26,0.96,16.86,7031
+264,Logic Gates Made of MOSFETs as Ideal Switches,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_3/Digital_and_Nonlinear/,3,4.68,4214.06,0.89,26.69,14668
+265,MOSFET Phase Inverter,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_6/Homework/,6,7.27,5107.38,0.91,27.53,8451
+274,Units of Energy,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_1/Basic_Circuit_Analysis/,1,2.54,1455.01,0.93,7.37,26673
+276,Probing Circuit with Oscilloscope,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_11/Homework/,11,2.96,1144.6,0.96,7.1,5345
+278,Duality in Series & Parallel Circuits,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_1/Basic_Circuit_Analysis/,1,2.09,1036.58,0.97,5.73,24914
+281,Duality in Series & Parallel Circuits,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_1/Basic_Circuit_Analysis/,1,2.59,1990.65,0.92,11.63,24872
+283,Problems with Lead Inductance,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_7/Homework/,7,4.48,3797.03,0.95,20.52,8457
+286,Differing Power Output from Series & Parallel Circuits,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_1/Basic_Circuit_Analysis/,1,4.07,3032.91,0.85,16.98,23160
+288,RC Circuit Left Open,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_6/Homework/#,6,7.68,5462.38,0.89,31.16,9016
+297,"Circuit with L, C, R, and V",https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_9/Homework/,9,6.85,4787.4,0.92,24.78,6909
+299,Duality in Series & Parallel Circuits,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_1/Basic_Circuit_Analysis/,1,3.29,2085.84,0.89,12.24,24912
+301,Logic Gates Made of MOSFETs as Ideal Switches,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_3/Digital_and_Nonlinear/,3,2.69,1712.72,0.97,10.95,14675
+303,Response to a Delayed Impulse,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_9/Homework/,9,3.25,3178.15,0.97,17.18,6783
+305,Duality in Series & Parallel Circuits,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_1/Basic_Circuit_Analysis/,1,2.65,1968.15,0.93,11.41,24889
+307,Properties of 1 bit of Digital Memory Using Transistors,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_8/Homework/,8,3.29,2936.71,0.96,11.91,6531
+310,Duality in Series & Parallel Circuits,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_1/Basic_Circuit_Analysis/,1,2.22,1063.75,0.96,5.83,24961
+314,Differing Power Output from Series & Parallel Circuits,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_1/Basic_Circuit_Analysis/,1,2.34,1309.1,0.96,7.23,23168
+318,Filtering Signals Using Op-Amps,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_12/Homework/,12,1.85,977.57,0.98,5.7,4537
+324,Response to a Delayed Impulse,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_9/Homework/,9,3.4,3122,0.97,16.99,7244
+326,Filtering Signals Using Op-Amps,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_12/Homework/,12,2.17,1359.27,0.95,8.29,4299
+327,Properties of 1 bit of Digital Memory Using Transistors,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_8/Homework/,8,4.13,2857.6,0.94,13.66,6620
+330,"Impedance of Circuit with L, R, & C",https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_10/Homework/,10,2.07,791.11,0.99,5.44,7052
+332,"Impedance of Circuit with L, R, & C",https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_10/Homework/,10,1.51,510.74,1,3.48,7038
+334,Charging An Inductor,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_8/Homework/,8,5.15,7204.3,0.88,36.89,7044
+335,MOSFET Phase Inverter,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_6/Homework/,6,6.72,7909.63,0.85,41.71,8445
+337,Filtering Signals Using Op-Amps,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_12/Homework/,12,2.75,1773.99,0.95,10.18,4456
+343,Response to a Delayed Impulse,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_9/Homework/,9,1.78,2159.5,0.97,11.48,7045
+344,MOSFET Phase Inverter,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_6/Homework/,6,3.31,4353.23,0.95,23.27,8451
+347,"Circuit with L, C, R, and V",https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_9/Homework/,9,4.72,4144.55,0.93,20.9,6679
+350,MOSFET Phase Inverter,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_6/Homework/,6,2.89,2305.9,0.97,13.11,8453
+353,"Impedance of Circuit with L, R, & C",https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_10/Homework/,10,1.81,662.17,1,4.34,7063
+354,"Physiological Model Using Current Source, Resistor, & Capacitor",https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_8/Homework/,8,3.91,2969.95,0.96,14.47,7032
+358,Filtering Signals Using Op-Amps,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_12/Homework/,12,1.46,732.72,0.98,4.75,4428
+365,Measuring Light Using a Photodiode and Op-Amp,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_12/Homework/,12,2.54,1685.53,0.94,8.08,4309
+369,Circuit Logic Diagrams,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_2/Linearity%2C_Thevenin_and_Norton%3B_Digital/,2,1.87,648.65,0.99,3.78,17418
+370,Duality in Series & Parallel Circuits,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_1/Basic_Circuit_Analysis/,1,2.15,1068.84,0.96,5.98,24932
+373,"Physiological Model Using Current Source, Resistor, & Capacitor",https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_8/Homework/,8,3.12,2579.57,0.97,12.08,6850
+378,Voltage-Divider Design,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_2/Linearity%2C_Thevenin_and_Norton%3B_Digital/,2,6.73,3664.77,0.84,18.5,16179
+389,MOSFET Phase Inverter,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_6/Homework/,6,3.24,4854.97,0.94,25.3,8449
+391,Probing Circuit with Oscilloscope,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_11/Homework/,11,2.8,1128.65,0.96,6.42,5349
+396,Duality in Series & Parallel Circuits,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_1/Basic_Circuit_Analysis/,1,2.13,1055.49,0.96,5.85,24953
+397,Duality in Series & Parallel Circuits,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_1/Basic_Circuit_Analysis/,1,2.69,2435.43,0.88,14.21,24867
+398,Modeling a Shock Absorber as a Circuit,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_9/Homework/,9,3.45,1921.06,0.96,11.84,6705
+400,Duality in Series & Parallel Circuits,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_1/Basic_Circuit_Analysis/,1,2.88,1937.16,0.93,11.17,24899
+405,RC Circuit Left Open,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_6/Homework/#,6,6.2,4546.98,0.92,25.68,9018
+414,Probing Circuit with Oscilloscope,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_11/Homework/,11,5.5,1881,0.94,10.25,5485
+416,"Circuit with L, C, R, and V",https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_9/Homework/,9,2.19,2516.13,0.99,12.56,7031
+423,"Circuit with L, C, R, and V",https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_9/Homework/,9,5.59,4070.78,0.93,21.94,6758
+429,Duality in Series & Parallel Circuits,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_1/Basic_Circuit_Analysis/,1,2.38,1922.98,0.93,11.14,24882
+434,Response to a Delayed Impulse,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_9/Homework/,9,2.2,3404.04,0.96,17.89,6796
+439,Series and Parallel Capacitors,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_6/Homework/,6,1.82,663.04,0.99,3.83,9304
+441,Duality in Series & Parallel Circuits,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_1/Basic_Circuit_Analysis/,1,2.56,1954.45,0.93,11.39,24864
+443,Duality in Series & Parallel Circuits,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_1/Basic_Circuit_Analysis/,1,2.12,1024.53,0.97,5.58,24958
+446,Response to a Delayed Impulse,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_9/Homework/,9,2.14,2151.05,0.97,12.04,7129
+447,Filtering Signals Using Op-Amps,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_12/Homework/,12,3.33,2153.64,0.93,12.15,4527
+449,Current Source Controlled By Op-Amp,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_12/Homework/,12,9.38,4176.67,0.84,22.2,5020
+452,Filtering Signals Using Op-Amps,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_12/Homework/,12,2.38,1776.23,0.95,9.72,4449
+454,Properties of 1 bit of Digital Memory Using Transistors,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_8/Homework/,8,1.96,1697.87,0.99,7.73,6571
+455,Series and Parallel Capacitors,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_6/Homework/,6,2.65,1041.6,0.99,6.6,9303
+456,Charging An Inductor,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_8/Homework/,8,9.24,8383.6,0.84,42.08,7472
+457,Properties of 1 bit of Digital Memory Using Transistors,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_8/Homework/,8,7.65,5466.11,0.89,24.07,6393
+460,Response to a Delayed Impulse,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_9/Homework/,9,2.17,2927.96,0.98,15.64,6820
+461,Response to a Delayed Impulse,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_9/Homework/,9,3.06,3186.81,0.97,16.45,6976
+467,Circuit Logic Diagrams,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_2/Linearity%2C_Thevenin_and_Norton%3B_Digital/,2,1.91,662.77,0.99,3.87,17423
+477,Modeling a Shock Absorber as a Circuit,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_9/Homework/,9,2.87,1769.86,0.98,10.89,6787
+478,Charging An Inductor,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_8/Homework/,8,5.86,7554.78,0.88,37.68,6902
+479,Filtering Signals Using Op-Amps,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_12/Homework/,12,1.72,932.51,0.98,5.35,4529
+484,Filtering Signals Using Op-Amps,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_12/Homework/,12,2.14,1366.02,0.95,8.26,4284
+487,Voltage-Divider Design,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_2/Linearity%2C_Thevenin_and_Norton%3B_Digital/,2,2.67,1920.43,0.94,9.58,16168
+488,Magnitude & Angle of Voltage-Transfer Ratio in First-Order Circuits,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_10/Homework/,10,4.46,1502.65,0.98,10.3,7090
+491,Properties of 1 bit of Digital Memory Using Transistors,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_8/Homework/,8,7.6,5744.42,0.86,25.7,6190
+493,"Physiological Model Using Current Source, Resistor, & Capacitor",https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_8/Homework/,8,2.38,1673.56,0.98,7.88,7146
+499,Voltage-Divider Design,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_2/Linearity%2C_Thevenin_and_Norton%3B_Digital/,2,3.13,2072.02,0.93,10.04,16186
+500,"Physiological Model Using Current Source, Resistor, & Capacitor",https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_8/Homework/,8,2.9,2248.62,0.98,10.78,6920
+513,Circuit Logic Diagrams,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_2/Linearity%2C_Thevenin_and_Norton%3B_Digital/,2,1.89,672.01,0.99,3.91,17419
+530,Magnitude & Angle of Voltage-Transfer Ratio in First-Order Circuits,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_10/Homework/,10,3.44,1292.64,0.98,8.83,7082
+543,Probing Circuit with Oscilloscope,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_11/Homework/,11,2.62,2122.51,0.98,9.52,5675
+553,Response to a Delayed Impulse,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_9/Homework/,9,6.84,4511.11,0.91,24.76,6916
+563,Series and Parallel Capacitors,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_6/Homework/,6,2.21,785.97,0.99,4.71,9301
+578,MOSFET Phase Inverter,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_6/Homework/,6,4.51,7125.88,0.88,37.16,8449
+579,"Damped Sinusoids in L, R, and C",https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_11/Homework/,11,2,1525.5,0.99,7.32,6001
+582,Logic Gates Made of MOSFETs as Ideal Switches,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_3/Digital_and_Nonlinear/,3,4.38,5626.87,0.85,36.01,14655
+583,Modeling a Shock Absorber as a Circuit,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_9/Homework/,9,2.11,1496.87,0.98,8.92,6619
+591,Modeling a Shock Absorber as a Circuit,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_9/Homework/,9,2.56,1574.04,0.98,9.67,6769
+598,Magnitude & Angle of Voltage-Transfer Ratio in First-Order Circuits,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_10/Homework/,10,6.01,1934.1,0.98,12.8,7144
+603,"Damped Sinusoids in L, R, and C",https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_11/Homework/,11,1.95,1535.8,1,7.24,5995
+613,Solar Power,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_2/Linearity%2C_Thevenin_and_Norton%3B_Digital/,2,4.19,4488.08,0.84,22.95,17190
+617,"Impedance of Circuit with L, R, & C",https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_10/Homework/,10,2.29,1450.82,0.97,9.8,6921
+618,Filtering Signals Using Op-Amps,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_12/Homework/,12,6.61,2761.56,0.87,15.03,4238
+621,Inductor & Capacitor in Output-Coupling Network of a Radio Transmitter,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_10/Homework/,10,6.62,4618.09,0.9,20.87,6567
+637,Duality in Series & Parallel Circuits,https://6002x.mitx.mit.edu/courseware/6.002_Spring_2012/Week_1/Basic_Circuit_Analysis/,1,2.42,1966.28,0.93,11.46,24875
