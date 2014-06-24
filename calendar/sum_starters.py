@@ -3,7 +3,7 @@
 
 import csv
 
-inputfilename = "HMXPC13_DI_v2_5-14-14.csv"
+inputfilename = "../HMXPC13_DI_v2_5-14-14.csv"
 delimiter = ","
 quotechar = '|'
 
