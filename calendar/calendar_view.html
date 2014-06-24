@@ -48,50 +48,47 @@ var svg = d3.select("body").selectAll("svg")
 var FIELDS = ["last_event_DI", "start_time_DI"];
 
 
-
 //This dictionary stores the maximum observed count for each field.
 //This is for color-scaling purposes.
-var MAX_COUNT_FIELDS = FIELDS.reduce(function(obj, fieldname) {
+var max_data;
+// This code initializes a zeroed dictionary with FIELDS as keys
+max_data = FIELDS.reduce(function(obj, fieldname) {
     obj[fieldname] = 0;
     return obj;
-}, {});  // This code initializes a zeroed dictionary with FIELDS as keys
+}, {});
 
 
-var colorstyleify = function(data_by_field) { // TODO -- Write this method
-
-  var max = 255;
-  
+var makeColorStyle = function(data_by_field) { // TODO -- Write this method
+  // Returns a string of the form "fill(rgb(r,g,b))" depending on the relative scaling
+  // of the numbers in data_by_field versus the maximum values logged in max_data.
+  var darkness = 200;
   if (FIELDS.length <= 0) {
     console.log("Error: FIELDS is empty? Never supposed to happen.");
     var r = 0;
   } else {
-    var percent = data_by_field[FIELDS[0]] / MAX_COUNT_FIELDS[FIELDS[0]];
-    var r = Math.floor(Math.min(max, max * percent));
+    var percent = data_by_field[FIELDS[0]] / max_data[FIELDS[0]];
+    var r = Math.floor(Math.min(darkness, darkness * percent));
   }
-
   if (FIELDS.length <= 1) {
     var g = 0;
   } else {
-    var percent = data_by_field[FIELDS[1]] / MAX_COUNT_FIELDS[FIELDS[1]];
-    var g = Math.floor(Math.min(max, max * percent));
+    var percent = data_by_field[FIELDS[1]] / max_data[FIELDS[1]];
+    var g = Math.floor(Math.min(darkness, darkness * percent));
   }
-
   if (FIELDS.length <= 2) {
     var b = 0;
   } else {
-    var percent = data_by_field[FIELDS[2]] / MAX_COUNT_FIELDS[FIELDS[2]];
-    var b = Math.floor(Math.min(max, max * percent));
+    var percent = data_by_field[FIELDS[2]] / max_data[FIELDS[2]];
+    var b = Math.floor(Math.min(darkness, darkness * percent));
   }
-
-  return "fill:rgb("+(max-g-b)+","+(max-r-b)+","+(max-g-r)+")";
+  return "fill:rgb("+(255-g-b)+","+(255-r-b)+","+(255-g-r)+")";
 }
 
-
-var prettyprintify = function(data_by_field) {
+var makeHoverText = function(data_by_field) {
+  // Creates pretty hovertext from the contents of data_by_field.
+  // TODO: not pretty enough
   return JSON.stringify(data_by_field);
 }
-
-
 
 svg.append("text")
     .attr("transform", "translate(-6," + cellSize * 3.5 + ")rotate(-90)")
@@ -118,28 +115,24 @@ svg.selectAll(".month")
     .attr("d", monthPath);
 
 
-d3.csv("summed_startdates.csv", function(error, csv) {
+d3.csv("summed_startdates.csv", function(error, csv) { // Fetch the data from the CSV
   var data = d3.nest()
     .key(function(d) { return d.Date; })
     .rollup(function(d) { return FIELDS.reduce(function(obj, fieldname) {
-
-      var loaded_value = parseInt(d[0][fieldname]);
-      if (loaded_value > MAX_COUNT_FIELDS[fieldname]) {
-        MAX_COUNT_FIELDS[fieldname] = loaded_value; // Update the max observed so far. This is for color-scaling purposes.
+      var loaded_value = parseFloat(d[0][fieldname]);
+      if (loaded_value > max_data[fieldname]) {
+        max_data[fieldname] = loaded_value; // Updates the max observed so far. This is for color-scaling purposes.
       }
-
       obj[fieldname] = loaded_value;
       return obj;
-      }, {}); }) //TODO: Change this data format so that it returns a dict of stuff by field -- DONE
+      }, {}); }) //This data format: returns a dict of stuff by field
     .map(csv);
-
-  console.log(MAX_COUNT_FIELDS);
 
   rect.filter(function(d) { return d in data; })
       .attr("class", function(d) { return "day"; }) 
-      .attr("style", function(d) { return colorstyleify(data[d]); }) //TODO: Change this so that style is changed instead -- DONE
+      .attr("style", function(d) { return makeColorStyle(data[d]); }) //Change the style to change the color
     .select("title")
-      .text(function(d) { return d + ": " + prettyprintify(data[d]); }); //TODO: Change this so that it pretty-prints -- DONE
+      .text(function(d) { return d + ": " + makeHoverText(data[d]); }); //Put something nice in the hovertext
 });
 
 function monthPath(t0) {
