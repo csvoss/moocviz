@@ -19,32 +19,6 @@ body {
   stroke-width: 2px;
 }
 
-.RdYlGn .q0  {fill:rgb(255,240,255)}
-.RdYlGn .q1  {fill:rgb(255,230,255)}
-.RdYlGn .q2  {fill:rgb(255,220,255)}
-.RdYlGn .q3  {fill:rgb(255,210,255)}
-.RdYlGn .q4  {fill:rgb(255,200,255)}
-.RdYlGn .q5  {fill:rgb(255,190,255)}
-.RdYlGn .q6  {fill:rgb(255,180,255)}
-.RdYlGn .q7  {fill:rgb(255,170,255)}
-.RdYlGn .q8  {fill:rgb(255,160,255)}
-.RdYlGn .q9  {fill:rgb(255,150,255)}
-.RdYlGn .q10 {fill:rgb(255,140,255)}
-.RdYlGn .q11 {fill:rgb(255,130,255)}
-.RdYlGn .q12 {fill:rgb(255,120,255)}
-.RdYlGn .q13 {fill:rgb(255,110,255)}
-.RdYlGn .q14 {fill:rgb(255,100,255)}
-.RdYlGn .q15 {fill:rgb(255,090,255)}
-.RdYlGn .q16 {fill:rgb(255,080,255)}
-.RdYlGn .q17 {fill:rgb(255,070,255)}
-.RdYlGn .q18 {fill:rgb(255,060,255)}
-.RdYlGn .q19 {fill:rgb(255,050,255)}
-.RdYlGn .q20 {fill:rgb(255,040,255)}
-.RdYlGn .q21 {fill:rgb(255,030,255)}
-.RdYlGn .q22 {fill:rgb(255,020,255)}
-.RdYlGn .q23 {fill:rgb(255,010,255)}
-.RdYlGn .q24 {fill:rgb(255,000,255)}
-
 </style>
 <body>
 <script src="http://d3js.org/d3.v3.min.js"></script>
@@ -59,10 +33,6 @@ var day = d3.time.format("%w"),
     percent = d3.format(".1%"),
     format = d3.time.format("%Y-%m-%d");
 
-var color = d3.scale.quantize()
-    .domain([0, 10000])
-    .range(d3.range(25).map(function(d) { return "q" + d; }));
-
 var svg = d3.select("body").selectAll("svg")
     .data(d3.range(2012, 2014))
   .enter().append("svg")
@@ -71,6 +41,57 @@ var svg = d3.select("body").selectAll("svg")
     .attr("class", "RdYlGn")
   .append("g")
     .attr("transform", "translate(" + ((width - cellSize * 53) / 2) + "," + (height - cellSize * 7 - 1) + ")");
+
+
+//Update this to change which fields of the CSV file are plotted!
+//Note: This code can handle up to 3 fields.
+var FIELDS = ["last_event_DI", "start_time_DI"];
+
+
+
+//This dictionary stores the maximum observed count for each field.
+//This is for color-scaling purposes.
+var MAX_COUNT_FIELDS = FIELDS.reduce(function(obj, fieldname) {
+    obj[fieldname] = 0;
+    return obj;
+}, {});  // This code initializes a zeroed dictionary with FIELDS as keys
+
+
+var colorstyleify = function(data_by_field) { // TODO -- Write this method
+
+  var max = 255;
+  
+  if (FIELDS.length <= 0) {
+    console.log("Error: FIELDS is empty? Never supposed to happen.");
+    var r = 0;
+  } else {
+    var percent = data_by_field[FIELDS[0]] / MAX_COUNT_FIELDS[FIELDS[0]];
+    var r = Math.floor(Math.min(max, max * percent));
+  }
+
+  if (FIELDS.length <= 1) {
+    var g = 0;
+  } else {
+    var percent = data_by_field[FIELDS[1]] / MAX_COUNT_FIELDS[FIELDS[1]];
+    var g = Math.floor(Math.min(max, max * percent));
+  }
+
+  if (FIELDS.length <= 2) {
+    var b = 0;
+  } else {
+    var percent = data_by_field[FIELDS[2]] / MAX_COUNT_FIELDS[FIELDS[2]];
+    var b = Math.floor(Math.min(max, max * percent));
+  }
+
+  return "fill:rgb("+(max-g-b)+","+(max-r-b)+","+(max-g-r)+")";
+}
+
+
+var prettyprintify = function(data_by_field) {
+  return JSON.stringify(data_by_field);
+}
+
+
 
 svg.append("text")
     .attr("transform", "translate(-6," + cellSize * 3.5 + ")rotate(-90)")
@@ -96,16 +117,29 @@ svg.selectAll(".month")
     .attr("class", "month")
     .attr("d", monthPath);
 
+
 d3.csv("summed_startdates.csv", function(error, csv) {
   var data = d3.nest()
-    .key(function(d) { console.log(d.Date); return d.Date; })
-    .rollup(function(d) { return +d[0].Sum; })
+    .key(function(d) { return d.Date; })
+    .rollup(function(d) { return FIELDS.reduce(function(obj, fieldname) {
+
+      var loaded_value = parseInt(d[0][fieldname]);
+      if (loaded_value > MAX_COUNT_FIELDS[fieldname]) {
+        MAX_COUNT_FIELDS[fieldname] = loaded_value; // Update the max observed so far. This is for color-scaling purposes.
+      }
+
+      obj[fieldname] = loaded_value;
+      return obj;
+      }, {}); }) //TODO: Change this data format so that it returns a dict of stuff by field -- DONE
     .map(csv);
 
+  console.log(MAX_COUNT_FIELDS);
+
   rect.filter(function(d) { return d in data; })
-      .attr("class", function(d) { return "day " + color(data[d]); })
+      .attr("class", function(d) { return "day"; }) 
+      .attr("style", function(d) { return colorstyleify(data[d]); }) //TODO: Change this so that style is changed instead -- DONE
     .select("title")
-      .text(function(d) { return d + ": " + data[d]; });
+      .text(function(d) { return d + ": " + prettyprintify(data[d]); }); //TODO: Change this so that it pretty-prints -- DONE
 });
 
 function monthPath(t0) {
