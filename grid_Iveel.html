@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html>
+<head>
+    <title>MOOCdb Student-Course Scatterplots</title>
+	
+	
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+	<!--script src="d3.v3.min.js"></script>
+	
+	<script src="jquery-ui-1.10.3.min.js"></script>
+	<script src="jquery-1.10.2.min.js"></script-->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+   
+	<!--link rel="stylesheet" type="text/css" href="visualization-site/templates/visuals/tooltip.css">
+	
+	<link rel="stylesheet" type="text/css" href="visualization-site/static/css/bootstrap-3.0.0.min.css"-->
+	<link rel="stylesheet" type="text/css" href="bootstrap-3.0.0/dist/css/bootstrap.min.css">
+    
+	
+</head>
+<style>
+    body {
+        font-family: helveticaneue, sans-serif;
+        font-size: 11px;
+    }
+
+    .axis path,
+    .axis line {
+        fill: none;
+        stroke: #000;
+        shape-rendering: crispEdges;
+    }
+
+    .dot {
+        stroke: #000;
+    }
+
+    .popover {
+        width: auto;
+    }
+	
+	table { 
+		table-layout: fixed; 
+	}
+	
+	table th, table td { 
+		overflow: hidden; 
+	}
+	
+	.bold-td{
+		width: 70%;
+		font-weight: bold;
+	}
+	
+	
+</style>
+<body>
+	<p id="chart"></p>
+
+<!-- The script which makes the actual chart. -->
+<script>
+	
+        var margin = {top: 20, right: 40, bottom: 30, left: 40},
+                width = 960 - margin.left - margin.right,
+                height = 500 - margin.top - margin.bottom;	
+
+        var x = d3.scale.linear()
+                .range([0, width]);
+
+        var y = d3.scale.linear()
+    			 .range([height, 0]);
+
+        var xAxis = d3.svg.axis()
+                .scale(x)
+                .orient("bottom");
+
+        var yAxis = d3.svg.axis()
+                .scale(y)
+                .orient("left");
+
+        d3.select("#chart").html("")
+		
+        var svg = d3.select("#chart").append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", "translate(" + margin.left + ", " + margin.top + ")");
+		
+	    var table = [];
+		var rangeX = 160;    //number of active day; it is gonna be value of some function
+		var rangeY = 35;     //number of chapters
+		var stepX = width/rangeX;
+		var stepY = height/rangeY; 
+		
+		//create a grid table size of (rangeX)x(rangeY)
+		//table[x][y] -->rect with coord (x*stepX, y*stepY)
+		
+		for (x in rangeX){
+			table[x] = [];
+			for (y in rangeY){
+				var rect = ("rect")   //create rect variable ????
+				   .attr('class', 'unit')
+				   .attr('width', 'stepX')
+				   .attr('height','stepY') 
+				   .attr("transform", "translate("+x*stepX+","+y*stepY+")";
+		        table[x][y] = {unit: rect, students:[],count:0}; 
+				svg.append(rect);
+			}
+		}
+			
+        d3.csv("test_HMX.csv", function(error, data) {
+            data.forEach(function(d) {
+                d.course_id = String(d.course_id);
+                d.userid_DI = String(d.userid_DI);
+                d.registered = +d.registered;
+                d.viewed = +d.viewed;
+                d.explored = +d.explored;
+                d.certified = +d.certified;
+                d.final_cc_cname_DI = String(+d.final_cc_cname_DI);
+                d.LoE_DI = +d.LoE_DI;
+                d.YoB = +d.YoB;
+                d.gender = +d.gender;
+                d.grade = +d.grade;
+                d.start_time_DI = String(d.start_time_DI);
+                d.last_event_DI = String(d.last_event_DI);
+                d.nevents = +d.nevents;
+                d.ndays_act = +d.ndays_act; // This is the x-axis
+                d.nplay_video = +d.nplay_video;
+                d.nchapters = +d.nchapters;
+                d.nforum_posts = +d.nforum_posts;
+                d.roles = +d.roles;
+                d.incomplete_flag = +d.incomplete_flag;
+				
+				var x = d.ndays_act //  rangeX/stepX+1
+				var y = d.nchapters // rangeY/stepY+1
+				table[x][y][students].append(d);
+				table[x][y][count]+=1;
+            });
+
+            x.domain(d3.extent(data, function(d) { return d.ndays_act; })).nice();
+            y.domain(d3.extent(data, function(d) { return d.nchapters })).nice();
+
+			
+			// Axis text labels
+            svg.append("g")
+                    .attr("class", "x axis")
+                    .attr("transform", "translate(0," + height + ")")
+                    .call(xAxis)
+                    .append("text")
+                    .attr("class", "label")
+                    .attr("x", width)
+                    .attr("y", -6)
+                    .style("text-anchor", "end")
+    				.text("Number of days active");
+
+            svg.append("g")
+                    .attr("class", "y axis")
+                    .call(yAxis)
+                    .append("text")
+                    .attr("class", "label")
+                    .attr("transform", "rotate(-90)")
+                    .attr("y", 6)
+                    .attr("dy", ".71em")
+                    .style("text-anchor", "end")
+                    .text(d3.select("#chosen_view")[0][0].value);
+
+			
+</script>
+</body>
+</html>
