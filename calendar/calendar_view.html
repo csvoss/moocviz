@@ -21,8 +21,24 @@ body {
 
 </style>
 <body>
+
+<select class="form-control" id="howmanycolors" onchange="render()">
+    <option>All Colors</option>
+    <option>Only Red</option>
+    <option>Only Green</option>
+    <option>Only Blue</option>
+</select><br />
+
+<div id="chart"></div>
+
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script>
+
+//TODO: Apply code review results
+
+function main() {
+    render();
+}
 
 var width = 960,
     height = 136,
@@ -33,119 +49,145 @@ var day = d3.time.format("%w"),
     percent = d3.format(".1%"),
     format = d3.time.format("%Y-%m-%d");
 
-var svg = d3.select("body").selectAll("svg")
-    .data(d3.range(2012, 2014))
-  .enter().append("svg")
-    .attr("width", width)
-    .attr("height", height)
-    .attr("class", "RdYlGn")
-  .append("g")
-    .attr("transform", "translate(" + ((width - cellSize * 53) / 2) + "," + (height - cellSize * 7 - 1) + ")");
-
-
 //Update this to change which fields of the CSV file are plotted!
 //Note: This code can handle up to 3 fields.
 var FIELDS = ["last_event_DI", "start_time_DI"];
 
+//Update this to change what input file is used!
+var INPUTFILE = "summed_startdates.csv";
 
-//This dictionary stores the maximum observed count for each field.
-//This is for color-scaling purposes.
-var max_data;
-// This code initializes a zeroed dictionary with FIELDS as keys
-max_data = FIELDS.reduce(function(obj, fieldname) {
-    obj[fieldname] = 0;
-    return obj;
-}, {});
+//This affects how dark the visualization is scaled to be.
+//Values from 0 to 255. 180-200 recommended. Refer to makeColorStyle.
+var DARKNESS = 200;
+
+function render() {
+
+    // Clear everything
+    d3.select("#chart").html("")
+
+    console.log("rendering...");
+
+    //This dictionary stores the maximum observed count for each field.
+    //This is for color-scaling purposes.
+    var max_data;
+    // This code initializes a zeroed dictionary with FIELDS as keys
+    max_data = FIELDS.reduce(function(obj, fieldname) {
+        obj[fieldname] = 0;
+        return obj;
+    }, {});
+
+    var svg = d3.select("#chart").selectAll("svg")
+        .data(d3.range(2012, 2014))
+      .enter().append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .attr("class", "RdYlGn")
+      .append("g")
+        .attr("transform", "translate(" + ((width - cellSize * 53) / 2) + "," + (height - cellSize * 7 - 1) + ")");
+
+    svg.append("text")
+        .attr("transform", "translate(-6," + cellSize * 3.5 + ")rotate(-90)")
+        .style("text-anchor", "middle")
+        .text(function(d) { return d; });
+
+    var rect = svg.selectAll(".day")
+        .data(function(d) { return d3.time.days(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
+      .enter().append("rect")
+        .attr("class", "day")
+        .attr("width", cellSize)
+        .attr("height", cellSize)
+        .attr("x", function(d) { return week(d) * cellSize; })
+        .attr("y", function(d) { return day(d) * cellSize; })
+        .datum(format);
+
+    rect.append("title")
+        .text(function(d) { return d; });
+
+    function monthPath(t0) {
+      var t1 = new Date(t0.getFullYear(), t0.getMonth() + 1, 0),
+          d0 = +day(t0), w0 = +week(t0),
+          d1 = +day(t1), w1 = +week(t1);
+      return "M" + (w0 + 1) * cellSize + "," + d0 * cellSize
+          + "H" + w0 * cellSize + "V" + 7 * cellSize
+          + "H" + w1 * cellSize + "V" + (d1 + 1) * cellSize
+          + "H" + (w1 + 1) * cellSize + "V" + 0
+          + "H" + (w0 + 1) * cellSize + "Z";
+    }
+
+    svg.selectAll(".month")
+        .data(function(d) { return d3.time.months(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
+      .enter().append("path")
+        .attr("class", "month")
+        .attr("d", monthPath);
 
 
-var makeColorStyle = function(data_by_field) { // TODO -- Write this method
-  // Returns a string of the form "fill(rgb(r,g,b))" depending on the relative scaling
-  // of the numbers in data_by_field versus the maximum values logged in max_data.
-  var darkness = 200;
-  if (FIELDS.length <= 0) {
-    console.log("Error: FIELDS is empty? Never supposed to happen.");
-    var r = 0;
-  } else {
-    var percent = data_by_field[FIELDS[0]] / max_data[FIELDS[0]];
-    var r = Math.floor(Math.min(darkness, darkness * percent));
-  }
-  if (FIELDS.length <= 1) {
-    var g = 0;
-  } else {
-    var percent = data_by_field[FIELDS[1]] / max_data[FIELDS[1]];
-    var g = Math.floor(Math.min(darkness, darkness * percent));
-  }
-  if (FIELDS.length <= 2) {
-    var b = 0;
-  } else {
-    var percent = data_by_field[FIELDS[2]] / max_data[FIELDS[2]];
-    var b = Math.floor(Math.min(darkness, darkness * percent));
-  }
-  return "fill:rgb("+(255-g-b)+","+(255-r-b)+","+(255-g-r)+")";
+    d3.csv(INPUTFILE, function(error, csv) { // Fetch the data from the CSV
+      var data = d3.nest()
+        .key(function(d) { return d.Date; })
+        .rollup(function(d) { return FIELDS.reduce(function(obj, fieldname) {
+            var loaded_value = parseFloat(d[0][fieldname]);
+            if (loaded_value > max_data[fieldname]) {
+                max_data[fieldname] = loaded_value; // Updates the max observed so far. This is for color-scaling purposes.
+            }
+            obj[fieldname] = loaded_value;
+                return obj;
+            }, {}); }) //This data format: returns a dict of stuff by field
+        .map(csv);
+
+      rect.filter(function(d) { return d in data; })
+          .attr("class", function(d) { return "day"; }) 
+          .attr("style", function(d) { return makeColorStyle(data[d], FIELDS, max_data); }) //Change the style to change the color
+        .select("title")
+          .text(function(d) { return d + ": " + makeHoverText(data[d]); }); //Put something nice in the hovertext
+    });
+
+    d3.select(self.frameElement).style("height", "2910px");
 }
+
+var makeColorStyle = function(data_by_field, FIELDS, max_data) { // TODO -- Write this method
+    // Returns a string of the form "fill(rgb(r,g,b))" depending on the relative scaling
+    // of the numbers in data_by_field versus the maximum values logged in max_data.
+
+    var f = function(i) {
+        if (FIELDS.length <= i) {
+            return 0;
+        } else {
+            var percent = data_by_field[FIELDS[i]] / max_data[FIELDS[i]];
+            return Math.floor(Math.min(DARKNESS, DARKNESS * percent));
+        }
+    }
+
+    var r = f(0);
+    var g = f(1);
+    var b = f(2);
+
+    //Adjust colors based on dropdown menu
+    var num_colors_string = d3.select("#howmanycolors")[0][0].value;
+    if (num_colors_string == "Only Red") {
+        g = 0;
+        b = 0;
+    }
+    if (num_colors_string == "Only Green") {
+        r = 0;
+        b = 0;
+    }
+    if (num_colors_string == "Only Blue") {
+        g = 0;
+        r = 0;
+    }
+
+    return "fill:rgb("+(255-g-b)+","+(255-r-b)+","+(255-g-r)+")";
+}
+
 
 var makeHoverText = function(data_by_field) {
-  // Creates pretty hovertext from the contents of data_by_field.
-  // TODO: not pretty enough
-  return JSON.stringify(data_by_field);
+    // Creates pretty hovertext from the contents of data_by_field.
+    // TODO: not pretty enough
+    return JSON.stringify(data_by_field);
 }
 
-svg.append("text")
-    .attr("transform", "translate(-6," + cellSize * 3.5 + ")rotate(-90)")
-    .style("text-anchor", "middle")
-    .text(function(d) { return d; });
-
-var rect = svg.selectAll(".day")
-    .data(function(d) { return d3.time.days(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
-  .enter().append("rect")
-    .attr("class", "day")
-    .attr("width", cellSize)
-    .attr("height", cellSize)
-    .attr("x", function(d) { return week(d) * cellSize; })
-    .attr("y", function(d) { return day(d) * cellSize; })
-    .datum(format);
-
-rect.append("title")
-    .text(function(d) { return d; });
-
-svg.selectAll(".month")
-    .data(function(d) { return d3.time.months(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
-  .enter().append("path")
-    .attr("class", "month")
-    .attr("d", monthPath);
 
 
-d3.csv("summed_startdates.csv", function(error, csv) { // Fetch the data from the CSV
-  var data = d3.nest()
-    .key(function(d) { return d.Date; })
-    .rollup(function(d) { return FIELDS.reduce(function(obj, fieldname) {
-      var loaded_value = parseFloat(d[0][fieldname]);
-      if (loaded_value > max_data[fieldname]) {
-        max_data[fieldname] = loaded_value; // Updates the max observed so far. This is for color-scaling purposes.
-      }
-      obj[fieldname] = loaded_value;
-      return obj;
-      }, {}); }) //This data format: returns a dict of stuff by field
-    .map(csv);
-
-  rect.filter(function(d) { return d in data; })
-      .attr("class", function(d) { return "day"; }) 
-      .attr("style", function(d) { return makeColorStyle(data[d]); }) //Change the style to change the color
-    .select("title")
-      .text(function(d) { return d + ": " + makeHoverText(data[d]); }); //Put something nice in the hovertext
-});
-
-function monthPath(t0) {
-  var t1 = new Date(t0.getFullYear(), t0.getMonth() + 1, 0),
-      d0 = +day(t0), w0 = +week(t0),
-      d1 = +day(t1), w1 = +week(t1);
-  return "M" + (w0 + 1) * cellSize + "," + d0 * cellSize
-      + "H" + w0 * cellSize + "V" + 7 * cellSize
-      + "H" + w1 * cellSize + "V" + (d1 + 1) * cellSize
-      + "H" + (w1 + 1) * cellSize + "V" + 0
-      + "H" + (w0 + 1) * cellSize + "Z";
-}
-
-d3.select(self.frameElement).style("height", "2910px");
+main();
 
 </script>

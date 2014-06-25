@@ -35,4 +35,5 @@ with open(inputfilename, 'rb') as csv_in:
         for date in sums.keys():
             csvwriter.writerow([date] +[sums_by_field[fi][date] for fi in fields])
 
+print "Done!"
 raw_input()
