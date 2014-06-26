@@ -27,14 +27,34 @@ body {
     <option>Only Red</option>
     <option>Only Green</option>
     <option>Only Blue</option>
-</select><br />
+</select>
+
+<select class="form-control" id="whichinputfile" onchange="render()">
+    <option>HarvardX_CB22x_2013_Spring.csv</option>
+    <option>HarvardX_CS50x_2012.csv</option>
+    <option>HarvardX_ER22x_2013_Spring.csv</option>
+    <option>HarvardX_PH207x_2012_Fall.csv</option>
+    <option>HarvardX_PH278x_2013_Spring.csv</option>
+    <option>MITx_14.73x_2013_Spring.csv</option>
+    <option>MITx_2.01x_2013_Spring.csv</option>
+    <option>MITx_3.091x_2012_Fall.csv</option>
+    <option>MITx_3.091x_2013_Spring.csv</option>
+    <option>MITx_6.002x_2012_Fall.csv</option>
+    <option>MITx_6.002x_2013_Spring.csv</option>
+    <option>MITx_6.00x_2012_Fall.csv</option>
+    <option>MITx_6.00x_2013_Spring.csv</option>
+    <option>MITx_7.00x_2013_Spring.csv</option>
+    <option>MITx_8.02x_2013_Spring.csv</option>
+    <option>MITx_8.MReV_2013_Summer.csv</option>
+</select>
+
+<br />
 
 <div id="chart"></div>
 
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script>
 
-//TODO: Apply code review results
 
 function main() {
     render();
@@ -54,7 +74,7 @@ var day = d3.time.format("%w"),
 var FIELDS = ["last_event_DI", "start_time_DI"];
 
 //Update this to change what input file is used!
-var INPUTFILE = "summed_startdates.csv";
+//var INPUTFILE = "summed_startdates.csv";
 
 //This affects how dark the visualization is scaled to be.
 //Values from 0 to 255. 180-200 recommended. Refer to makeColorStyle.
@@ -62,10 +82,15 @@ var DARKNESS = 200;
 
 function render() {
 
+
+
     // Clear everything
     d3.select("#chart").html("")
 
     console.log("rendering...");
+
+    var INPUTFILE = 'summed_startdates/' + d3.select("#whichinputfile")[0][0].value;
+    console.log(INPUTFILE);
 
     //This dictionary stores the maximum observed count for each field.
     //This is for color-scaling purposes.
@@ -81,7 +106,6 @@ function render() {
       .enter().append("svg")
         .attr("width", width)
         .attr("height", height)
-        .attr("class", "RdYlGn")
       .append("g")
         .attr("transform", "translate(" + ((width - cellSize * 53) / 2) + "," + (height - cellSize * 7 - 1) + ")");
 
@@ -120,6 +144,15 @@ function render() {
         .attr("class", "month")
         .attr("d", monthPath);
 
+    var month_name = d3.time.format("%B")
+
+    svg.selectAll("text.month")
+        .data(function(d) { return d3.time.months(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
+      .enter().append("text")
+        .attr("class", "month")
+        .attr("x", function(d) { return week(d) * cellSize; })
+        .attr("y", 8 * cellSize)
+        .text(month_name);  
 
     d3.csv(INPUTFILE, function(error, csv) { // Fetch the data from the CSV
       var data = d3.nest()
@@ -144,7 +177,7 @@ function render() {
     d3.select(self.frameElement).style("height", "2910px");
 }
 
-var makeColorStyle = function(data_by_field, FIELDS, max_data) { // TODO -- Write this method
+var makeColorStyle = function(data_by_field, FIELDS, max_data) {
     // Returns a string of the form "fill(rgb(r,g,b))" depending on the relative scaling
     // of the numbers in data_by_field versus the maximum values logged in max_data.
 
@@ -181,9 +214,12 @@ var makeColorStyle = function(data_by_field, FIELDS, max_data) { // TODO -- Writ
 
 
 var makeHoverText = function(data_by_field) {
-    // Creates pretty hovertext from the contents of data_by_field.
-    // TODO: not pretty enough
-    return JSON.stringify(data_by_field);
+    // Creates prettier hovertext from the contents of data_by_field.
+    out = "  "
+    for (var property in data_by_field) {
+        out = out + "#" + property + " = " + data_by_field[property] + ", ";
+    }
+    return out.slice(0, -2);
 }
 
 
