@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html>
+<head>
+    <title>MOOCdb Heat Map</title>
+	
+	
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+	<!--script src="d3.v3.min.js"></script>
+	
+	<script src="jquery-ui-1.10.3.min.js"></script>
+	<script src="jquery-1.10.2.min.js"></script-->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+   
+	<!--link rel="stylesheet" type="text/css" href="visualization-site/templates/visuals/tooltip.css">
+	
+	<link rel="stylesheet" type="text/css" href="visualization-site/static/css/bootstrap-3.0.0.min.css"-->
+	<link rel="stylesheet" type="text/css" href="bootstrap-3.0.0/dist/css/bootstrap.min.css">
+    
+	
+</head>
+<style>
+    body {
+        font-family: helveticaneue, sans-serif;
+        font-size: 11px;
+    }
+	
+	
+	.label{
+		font-size: 12px;
+		font-family:serif;
+	}
+
+    .axis path,
+    .axis line {
+        fill: none;
+        stroke: #000;
+        shape-rendering: crispEdges;
+    }
+    
+	.rect{
+		color:yellow;
+	}
+    .dot {
+        stroke: #000;
+    }
+
+    .popover {
+        width: auto;
+    }
+	
+	table { 
+		table-layout: fixed; 
+	}
+	
+	table th, table td { 
+		overflow: hidden; 
+	}
+	
+	.bold-td{
+		width: 70%;
+		font-weight: bold;
+	}
+	
+	.cell{
+		pointer-events:all;
+		fill:black;
+	}
+	
+	.cell:hover{
+		fill:red;
+	}
+	
+	#chart{
+	    width:800;
+		height:600;
+		display:block;
+
+
+	}
+	#zoomText{
+		width: 100%;
+		height: 50px;
+		fill:#eaf5f4;
+	}
+	
+	
+	
+	#heatTable{
+		display:inline;
+		width:70%;
+		height: 100%;
+		float:left;
+	}
+	
+	#leftSide{
+		display:inline;
+		width:30%;
+		height:100%;
+		float:left;
+	}
+	
+</style>
+<body>
+
+<h1 style="padding-left:10px;">MOOCdb Heat Map</h1>
+<div id="chart">
+	<span id="heatTable"></span>
+	<span id="leftSide">
+		<span id="choiceField">
+			<select class="form-control" id="chosen_dim_y" name="data_view" onchange="render()"> 
+				<option>Grade</option>
+				<option>Number of active days</option>                
+             </select>
+			<select class="form-control" id="chosen_dim_x" name="data_view" onchange="render()"> 
+				<option>Number of events</option>
+				<option>Number of video plays</option>
+				<option>Number of chapters</option>
+				<option>Number of forum posts</option>
+             </select>
+		</span>
+		<svg id="zoomField"></svg>
+	</span>
+</div>
+
+<!-- The script which makes the actual chart. -->
+<script>
+	
+	//adjusting size of heat table
+	var margin = {top: 50, right: 20, bottom: 40, left: 50},
+			width = 560 - margin.left - margin.right,
+			height = 450 - margin.top - margin.bottom;
+
+	d3.select("#heatTable").html("");
+	var heatTable = d3.select("#heatTable").append("svg")
+			.attr("id", "heatSVG")
+			.attr("width", width + margin.left + margin.right)
+			.attr("height", height + margin.top + margin.bottom)
+			.append("g")
+			.attr("transform", "translate(" + margin.left + ", " + margin.top + ")");
+	
+	//color legend of heat table
+	var legendWidth = 40;
+	var legendHeight = 20;
+			
+	var legend = d3.select("#heatSVG")
+	.append("g")
+	.attr("width", legendWidth*10 )
+	.attr("height", legendHeight*2)
+	.attr("transform","translate("+margin.left+","+(height+margin.top/2)+")")
+
+	
+	
+	var tableW = width;
+	var tableH = height-70;
+	var table = []; //table[x][y] stores data of cell with coord (<=x,<=y).
+
+	//adjusting size of zoomed cell (table)
+	var marginZoom = {top: 80, right: 30, bottom: 5, left: 60},
+			zoomW = 300 - marginZoom.left - marginZoom.right,
+			zoomH = 300 - marginZoom.top - marginZoom.bottom;
+
+	var zoomSVG = d3.select("#zoomField")
+			.attr("width", zoomW + marginZoom.left + marginZoom.right)
+			.attr("height", zoomH + marginZoom.top + marginZoom.bottom)
+			.style("background-color", "#e2e2f7");
+			
+	var zoomTable = zoomSVG.append("g")
+			.attr("transform", "translate(" + marginZoom.left + ", " + marginZoom.top + ")");
+	
+	var zoomText = 	zoomSVG.append("g");
+
+	zoomText.append("rect")
+	.attr("rx",8)
+	.attr("ry",8)
+	.attr("border-radius", "8px")
+	.attr("width", zoomW+50)
+	.attr("height", 30)
+	.attr("fill", "#ddfeff")
+	.attr("stroke-width",2)
+	.attr("stroke","rgb(244, 208, 12)")
+	.attr("transform", "translate(" + 0 + ", " + 5 + ")");
+	
+	zoomText.append("text")
+	.attr("x", 10)
+	.attr("y", 20)
+	.style("font-size", 16)
+	.attr("id", "zoomTexting");
+	
+
+
+	
+	
+	var human_readable_views = {
+		"Grade": "grade",
+		"Number of active days": "ndays_act",
+
+		"Last event": "last_event_DI",
+		"Number of events": "nevents",
+		"Number of video plays": "nplay_video",
+		"Number of chapters": "nchapters",
+		"Number of forum posts": "nforum_posts"
+	};
+	
+
+/////////whenever user changes choice field, render function will be called
+    function render() {
+		//clear all visialazition
+		heatTable.html("");
+		legend.html("");
+
+		//default size
+		var numX = 30;
+		var numY = 30;
+		var cellX = 1.0*tableW/numX;
+		var cellY = 1.0*tableH/numY;
+		
+		//setting x, y dimesionss for heat table
+		var dimX = human_readable_views[d3.select("#chosen_dim_x")[0][0].value];
+		var dimY = human_readable_views[d3.select("#chosen_dim_y")[0][0].value];
+		
+		//loading data
+        d3.csv("test_HMX.csv", function(error, data) {
+			//max values of x, y dimesions
+			var maxX = d3.max(data, function(d) { return parseFloat(d[dimX]);});
+			var maxY = d3.max(data, function(d) { return parseFloat(d[dimY]);});
+			
+			//setting x,y dimesions' range of heat maps
+			//if data has 20 ranges, we don't need initial numX = 40;
+			//type-- grade: 0-1, number of activities: integer 
+			if (maxX < numX){
+				numX = Math.ceil(maxX);
+				cellX = 1.0*tableW/numX;
+			}
+	
+			if ( dimY == "grade"){
+				numY = 20;
+				cellY = 1.0*tableH/numY;
+			}else if (maxY < numY){
+				numY = Math.ceil(maxY);
+				cellY = 1.0*tableH/numY;
+			}
+			
+		    //scaling function for heat table
+			//maxX is in numX th cell since cell range is 1,2...numX
+			var scaleX = d3.scale.linear()
+					.domain([0, maxX])
+					.range([0, numX*cellX]);
+			var scaleY = d3.scale.linear()
+					.domain([0, maxY])
+					.range([0, numY*cellY]);
+			
+			//function: mathes input number to cell number 
+			function cell_X(num){
+				var x = Math.ceil( scaleX(parseFloat(num))/cellX);
+				if (x == 0){
+					return 1;
+				}else {return x;}
+			}
+			
+			function cell_Y(num){
+				var y = Math.ceil( scaleY(parseFloat(num))/cellY);
+				if (y == 0){
+					return 1;
+				}else {return y;}
+			}
+			
+			//create heat table size of (numX)x(numY)
+		    //table[x][y] stores data of rect with coord (<=x, <=y)
+			console.log("TABLEEEEEEEEEEEEEEE");
+			for (x = 1; x<=numX; x++){
+				table[x] = [];
+				for (y=1; y<=numY; y++){
+					table[x][y] = {students:[],count:0};
+					heatTable.append("rect")  
+						.attr('x', x)   
+						.attr('y', y)
+						.attr('class', 'cell')
+						.attr('width', cellX)
+						.attr('height', cellY) 
+						.attr("transform", "translate("+((x-1)*cellX)+","+((y-1)*cellY)+")")
+						.on("mouseover", updateZoom); 
+				}
+			}
+			
+			//finding each cell's data: students, number of students 
+            data.forEach(function(d) {
+				var x = d[dimX];
+				var y = d[dimY];
+				if ( x !=="" && y!=="" && x!==" " && y!==" "){  ///IMPROVE!!!!
+					var x_th = cell_X(x);
+					var y_th = cell_Y(y);
+					table[x_th][y_th].students.push(d);
+					table[x_th][y_th].count+=1;
+				}
+            });
+			
+			
+			function updateZoom(){
+				zoomTable.html("");
+				var tempX = $(this).attr('x');
+				var tempY = $(this).attr('y');
+				console.log(tempX, tempY);
+				var data = table[tempX][tempY].students;
+				//console.log("table",data.length, data);
+				$("#zoomTexting").text("number of students: "+ data.length);
+				//scaling function for zoomIn table
+				var tempMaxX = d3.max(data, function(d) { return parseFloat(d[dimX]);});
+				var tempMaxY = d3.max(data, function(d) { return parseFloat(d[dimY]);});
+				var tempMinX = d3.min(data, function(d) { return parseFloat(d[dimX]);});     
+				var tempMinY = d3.min(data, function(d) { return parseFloat(d[dimY]);});	
+				
+				var scaleZoomX = d3.scale.linear()
+						.domain([tempMinX, tempMaxX])
+						.range([0,zoomW]);
+				var scaleZoomY = d3.scale.linear()
+						.domain([tempMinY, tempMaxY])      						
+						.range([0,zoomH]); 
+				zoomTable.selectAll(".dot")
+						.data(data)
+						.enter()
+						.append("circle") 
+						.attr("class","dot")
+						.attr("r", 4)
+						.attr("cx", function(d){
+							return scaleZoomX(parseFloat(d[dimX]));})
+						.attr("cy", function (d){			
+							return scaleZoomY(parseFloat(d[dimY]));})                     
+						.style("fill", "red")
+						.style("opacity", 0.5);
+				
+				//creating axis labels for zoomTable
+				var xAxis = d3.svg.axis()
+					.scale(scaleZoomX)
+					.orient("top")
+			        .ticks(5);
+				zoomTable.append("g")
+						.attr("class", "x axis")
+						.call(xAxis)
+						.append("text")
+						.attr("class", "label")
+						.attr("x", zoomW/2+10)
+						.attr("y", -25)
+						.style("text-anchor", "end")
+						.text(d3.select("#chosen_dim_x")[0][0].value);
+
+				var yAxis = d3.svg.axis()
+						.scale(scaleZoomY)
+						.orient("left")
+						.ticks(5);
+				zoomTable.append("g")
+						.attr("class", "y axis")
+						.call(yAxis)
+						.append("text")
+						.attr("class", "label")
+						.attr("x", -zoomH/3)
+						.attr("y", -marginZoom.left+15)
+						.attr("transform", "rotate(-90)")
+						.style("text-anchor", "end")
+						.text(d3.select("#chosen_dim_y")[0][0].value);
+
+			}
+			
+
+			
+			//Heat table coloring
+			//10 peaks of number students [counts]
+			var colorRange = Array.apply(null, new Array(10)).map(Number.prototype.valueOf,0); 
+			for (x = 1; x<=numX; x++){
+				for (y=1; y<=numY; y++){
+					if( colorRange[0]<table[x][y].count && !(table[x][y].count in colorRange)){
+						colorRange[0]=table[x][y].count;
+						colorRange.sort(function(a, b){return a-b});
+					}
+				}
+			}
+			
+			var colorList =['#f2fdfd','#9ae8dc','#2ab6c7','#6db171','#3ece0b','#c1f549','#eef460','#f0d542','#fc9344','#ef682d','#ef5532','#7c1a1a'];
+			colorRange.unshift(0);
+			
+           colorRange = colorRange.filter( function( item, index, inputArray ) {
+           return inputArray.indexOf(item) == index;
+    });
+			colorRange.sort(function(a, b){return a-b});
+
+			
+			//color function of Heat table
+			var colorScale = d3.scale.linear()
+			  .domain(colorRange)
+			  .range(colorList);
+		                  
+           $(".cell").each( function(i) {
+			   var x = $(this).attr('x');
+			   var y = $(this).attr('y');
+			   console.log(numX, numY);
+			  
+			   console.log( "x,y", x,y);
+			   var color = colorScale(table[x][y].count);
+		       d3.select(this).style("fill", color);
+		   });
+			
+
+	
+			legendEnter = legend.selectAll(".legend")
+					.data(colorRange)
+					.enter().append("g")
+					.attr("class", "legend");
+			
+			legendEnter.append("text")
+			.text("Number of students:")
+			.attr("font-size", 14)
+			.attr("y", legendHeight/2) ;
+			
+			legendEnter.append("rect")
+					.attr("x", function(d, i) { return 150+legendWidth * i; })
+					//.attr("y", height)
+					.attr("width", legendWidth)
+					.attr("height", legendHeight)
+					.style("fill", function(d, i) { return colorList[i]; });
+
+			legendEnter.append("text")
+					.attr("class", "mono")
+					.text(function(d) { return d; })
+					.attr("width", legendWidth)
+					.attr("x", function(d, i) { return 155+legendWidth * i; });
+		
+			
+			
+			//Creating axis labels	
+			var xAxis = d3.svg.axis()
+					.scale(scaleX)
+					.orient("top")
+			        .ticks(5);
+            heatTable.append("g")
+                    .attr("class", "x axis")
+                    .call(xAxis)
+                    .append("text")
+                    .attr("class", "label")
+                    .attr("x", width/2+10)
+                    .attr("y", -margin.top+15)
+                    .style("text-anchor", "end")
+    				.text(d3.select("#chosen_dim_x")[0][0].value);
+			
+			var yAxis = d3.svg.axis()
+					.scale(scaleY)
+					.orient("left")
+			        .ticks(5);
+            heatTable.append("g")
+                    .attr("class", "y axis")
+                    .call(yAxis)
+                    .append("text")
+                    .attr("class", "label")
+                    .attr("x", -tableH/2)
+                    .attr("y", -margin.left+15)
+					.attr("transform", "rotate(-90)")
+                    .style("text-anchor", "end")
+    				.text(d3.select("#chosen_dim_y")[0][0].value);
+			
+			
+			
+ 
+               
+		});
+		}
+	
+    render();
+</script>
+</body>
+</html>
