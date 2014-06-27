@@ -22,32 +22,35 @@ body {
 </style>
 <body>
 
-<select class="form-control" id="howmanycolors" onchange="render()">
-    <option>Start and End Date</option>
-    <option>Only End Date</option>
-    <option>Only Start Date</option>
-</select>
+    <p>Select which data is shown: &nbsp;
+        <select class="form-control" id="howmanycolors" onchange="render()">
+            <option>Start and End Date</option>
+            <option>Only End Date</option>
+            <option>Only Start Date</option>
+        </select>
+    </p>
 
-<select class="form-control" id="whichinputfile" onchange="render()">
-    <option>All_Courses</option>
-    <option>HarvardX_CB22x_2013_Spring</option>
-    <option>HarvardX_CS50x_2012</option>
-    <option>HarvardX_ER22x_2013_Spring</option>
-    <option>HarvardX_PH207x_2012_Fall</option>
-    <option>HarvardX_PH278x_2013_Spring</option>
-    <option>MITx_14.73x_2013_Spring</option>
-    <option>MITx_2.01x_2013_Spring</option>
-    <option>MITx_3.091x_2012_Fall</option>
-    <option>MITx_3.091x_2013_Spring</option>
-    <option>MITx_6.002x_2012_Fall</option>
-    <option>MITx_6.002x_2013_Spring</option>
-    <option>MITx_6.00x_2012_Fall</option>
-    <option>MITx_6.00x_2013_Spring</option>
-    <option>MITx_7.00x_2013_Spring</option>
-    <option>MITx_8.02x_2013_Spring</option>
-    <option>MITx_8.MReV_2013_Summer</option>
-</select>
-
+    <p>Select by course:  &nbsp;
+        <select class="form-control" id="whichinputfile" onchange="render()">
+            <option>All_Courses</option>
+            <option>HarvardX_CB22x_2013_Spring</option>
+            <option>HarvardX_CS50x_2012</option>
+            <option>HarvardX_ER22x_2013_Spring</option>
+            <option>HarvardX_PH207x_2012_Fall</option>
+            <option>HarvardX_PH278x_2013_Spring</option>
+            <option>MITx_14.73x_2013_Spring</option>
+            <option>MITx_2.01x_2013_Spring</option>
+            <option>MITx_3.091x_2012_Fall</option>
+            <option>MITx_3.091x_2013_Spring</option>
+            <option>MITx_6.002x_2012_Fall</option>
+            <option>MITx_6.002x_2013_Spring</option>
+            <option>MITx_6.00x_2012_Fall</option>
+            <option>MITx_6.00x_2013_Spring</option>
+            <option>MITx_7.00x_2013_Spring</option>
+            <option>MITx_8.02x_2013_Spring</option>
+            <option>MITx_8.MReV_2013_Summer</option>
+        </select>
+    </p>
 <br />
 
 <div id="chart"></div>
