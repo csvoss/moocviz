@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<head>
+<meta charset="utf-8">
+<title>World Map</title>
+<style>
+#top{
+  float:left;  
+  margin:0 0 10px 5%;
+  width:50%;
+}
+
+#legend{
+  margin:10px 5% 10px 20px;
+  float:right;
+  background: #fff;
+  border: 2px solid #ccc;
+  padding:10px 10px 25px;
+  width: 230px;
+  height: 160px;
+}
+#legend div {
+  clear:both;
+  margin-right:10px;
+  width:15px;
+  height:15px;
+  float:left;
+}
+#legend label {
+  width: 200px;
+  float:left;
+}
+
+h2{
+  margin: 10px 30%;
+  width: 40%;
+  text-align: center;
+  padding: 2px 4px;
+  clear: both;
+}
+
+#container {
+  margin:0 5%;
+  padding:0px;
+  border:2px solid #d0d0d0;
+  border-radius: 5px;
+  height:100%;
+  clear:both;
+}
+.country {fill:#ccc;}
+
+
+.hidden { 
+  display: none; 
+}
+div.tooltip {
+  color: #222; 
+  background: #fff; 
+  padding: .5em; 
+  text-shadow: #f5f5f5 0 1px 0;
+  border-radius: 2px; 
+  box-shadow: 0px 0px 2px 0px #a6a6a6; 
+  opacity: 0.9; 
+  position: absolute;
+}
+
+#info{
+  margin:10px 10%;
+  background: #fff;
+  border: 2px solid #ccc;
+  padding:10px;
+}
+
+.fill {
+  fill: #fff;
+}
+.graticule {
+  fill: none;
+  stroke: #777;
+  stroke-width: .5px;
+  stroke-opacity: .5;
+}
+
+</style>
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-941940-28']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+</head>
+<body>
+
+  <div id="top">
+    <h1>World Map Visualization</h1>
+    <p>Select by course:  &nbsp;
+    <select class="form-control" id="whichinputfile" onchange="render()">
+        <option>All_Courses</option>
+        <option>HarvardX_CB22x_2013_Spring</option>
+        <option>HarvardX_CS50x_2012</option>
+        <option>HarvardX_ER22x_2013_Spring</option>
+        <option>HarvardX_PH207x_2012_Fall</option>
+        <option>HarvardX_PH278x_2013_Spring</option>
+        <option>MITx_14.73x_2013_Spring</option>
+        <option>MITx_2.01x_2013_Spring</option>
+        <option>MITx_3.091x_2012_Fall</option>
+        <option>MITx_3.091x_2013_Spring</option>
+        <option>MITx_6.002x_2012_Fall</option>
+        <option>MITx_6.002x_2013_Spring</option>
+        <option>MITx_6.00x_2012_Fall</option>
+        <option>MITx_6.00x_2013_Spring</option>
+        <option>MITx_7.00x_2013_Spring</option>
+        <option>MITx_8.02x_2013_Spring</option>
+        <option>MITx_8.MReV_2013_Summer</option>
+    </select>
+  </p>
+
+    <p>Select by data field:  &nbsp;
+    <select class="form-control" id="whichdatafield" onchange="render()">
+        <option>registered</option>
+        <option>viewed</option>
+        <option>explored</option>
+        <option>certified</option>
+        <option>grade</option>
+        <option>nevents</option>
+        <option>ndays_act</option>
+        <option>nplay_video</option>
+        <option>nchapters</option>
+        <option>nforum_posts</option>
+        <option>registered_avg</option>
+        <option>viewed_avg</option>
+        <option>explored_avg</option>
+        <option>certified_avg</option>
+        <option>grade_avg</option>
+        <option>nevents_avg</option>
+        <option>ndays_act_avg</option>
+        <option>nplay_video_avg</option>
+        <option>nchapters_avg</option>
+        <option>nforum_posts_avg</option>
+    </select>
+  </p>
+
+  </div>
+  <div id="legend"></div>
+
+  <div id="container"></div>
+
+  <div id="info"></div>
+
+<script src="js/d3.min.js"></script>
+<script src="js/topojson.v1.min.js"></script>
+<script src="js/d3.geo.projection.v0.min.js"></script>
+
+<script>
+
+var FIELD;
+var INPUTFILE;
+
+function render() {
+  FIELD = d3.select("#whichdatafield")[0][0].value;
+  //FIELD = 'grade';
+  INPUTFILE = 'summed_by_country/' + d3.select("#whichinputfile")[0][0].value + '.csv';
+  //INPUTFILE = 'summed_by_country/HarvardX_CB22x_2013_Spring.csv'
+  redraw();
+}
+
+var throttleTimer;
+function throttle() {
+  window.clearTimeout(throttleTimer);
+    throttleTimer = window.setTimeout(function() {
+      redraw();
+    }, 200);
+}
+function redraw() {
+  d3.select('svg').remove();
+  document.getElementById('info').innerHTML = "";
+  setup();
+  draw(topo);
+}
+d3.select(window).on("resize", throttle);
+
+//queue
+(function(){function n(n){function t(){for(;f=a<c.length&&n>p;){var u=a++,t=c[u],r=l.call(t,1);r.push(e(u)),++p,t[0].apply(null,r)}}function e(n){return function(u,l){--p,null==d&&(null!=u?(d=u,a=s=0/0,r()):(c[n]=l,--s?f||t():r()))}}function r(){null!=d?v(d):i?v(d,c):v.apply(null,[d].concat(c))}var o,f,i,c=[],a=0,p=0,s=0,d=null,v=u;return n||(n=1/0),o={defer:function(){return d||(c.push(arguments),++s,t()),o},await:function(n){return v=n,i=!1,s||r(),o},awaitAll:function(n){return v=n,i=!0,s||r(),o}}}function u(){}"undefined"==typeof module?self.queue=n:module.exports=n,n.version="1.0.4";var l=[].slice})();
+
+var topo,projection,path,svg,g,graticule;
+
+var tooltip = d3.select("body").append("div").attr("class", "tooltip hidden");
+
+setup();
+
+function setup() {
+
+  var width = document.getElementById('container').offsetWidth;
+  var height = width / 2;
+
+  //projection = d3.geo.mercator().translate([0, 0]).scale(width / 2 / Math.PI);
+  projection = d3.geo.hammer().translate([0, 0]).scale(width / 2 / Math.PI);
+
+  path = d3.geo.path().projection(projection);
+
+  graticule = d3.geo.graticule();
+
+  svg = d3.select("#container").append("svg")
+      .attr("width", width)
+      .attr("height", height);
+
+  var outterg = svg.append("g").attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+  g = outterg.append("g").attr("id", "innerg");
+
+  g.append("defs").append("path")
+      .datum({type: "Sphere"})
+      .attr("id", "sphere")
+      .attr("d", path);
+
+  g.append("use")
+      .attr("class", "stroke")
+      .attr("xlink:href", "#sphere");
+
+  g.append("use")
+      .attr("class", "fill")
+      .attr("xlink:href", "#sphere");
+
+  g.append("path")
+      .datum(graticule)
+      .attr("class", "graticule")
+      .attr("d", path);
+}
+
+function addCommas(nStr){
+  var numDigits = 6;
+  nStr += '';
+  var x = nStr.split('.');
+  var x1 = x[0];
+  var x2len = Math.max(0, numDigits-x1.length); // for trimming extra decimals
+  var x2 = x.length > 1 ? '.' + x[1].slice(0, x2len) : '';
+  var rgx = /(\d+)(\d{3})/;
+  while (rgx.test(x1)) {
+    x1 = x1.replace(rgx, '$1' + ',' + '$2');
+  }
+  return x1 + x2;
+}
+
+function draw() {
+  queue()
+      .defer(d3.json, "data/world-110m-cia.json")
+      .defer(d3.csv, INPUTFILE)
+      .defer(d3.csv, "data/area.csv")
+      .await(ready);
+
+  function ready(error, world, population, area) {
+
+    topo = topojson.feature(world, world.objects.countries).features;
+
+    //update topo with population density
+    topo.forEach(function(f){
+      var cpop = population.filter(function(a){ return a.Country.contains(f.properties.name)});
+      if(cpop.length>0){
+        var carea = area.filter(function(a){ return a.code == f.properties.iso});
+        if(carea.length>0){
+          f.properties.value = parseFloat(cpop[0][FIELD]);
+        }
+      }
+    });
+
+    //sort it by density
+    topo.sort(function(a, b){
+      if (a.properties.value == undefined) a.properties.value = 0;
+      if (b.properties.value == undefined) b.properties.value = 0;
+      return d3.descending(parseFloat(a.properties.value), parseFloat(b.properties.value)) 
+    });
+
+    var maximum = topo[0].properties.value * 1.0;
+    var log_maximum = Math.log10(maximum + 1);
+    var R = 15, G = 30, B = 135; // a nice dark blue
+    R = 255-R;
+    G = 255-G;
+    B = 255-B;
+
+    function color(num) {
+      if (num==0) return "white";
+      percent = Math.log10(num + 1) / log_maximum;
+      var r = Math.round(255 - R*percent);
+      var g = Math.round(255 - G*percent);
+      var b = Math.round(255 - B*percent);
+      return "rgb(" + r + "," + g + "," + b + ")"
+    }
+
+    var country = d3.select("#innerg").selectAll(".country").data(topo);
+
+    //offsets
+    var offsetL = document.getElementById('container').offsetLeft+30;
+    var offsetT =document.getElementById('container').offsetTop-30;
+
+    country.enter().insert("path")
+      .attr("class", "country")
+      .attr("d", path)
+      .attr("id", function(d,i) { return d.id; })
+      //.attr("title", function(d,i) { return d.properties.name; })
+      .style("fill", function(d,i) { 
+        if(d.properties.value !== undefined){
+          return color(d.properties.value);         
+        } else {
+          console.log(d);
+        }
+      })
+      .style("stroke", "#111")
+      .on("mousemove", function(d,i) {
+        var mouse = d3.mouse(svg.node()).map( function(d) { return parseInt(d); } );
+        var pop = ' | '+addCommas(parseFloat(d.properties.value));
+
+        tooltip.classed("hidden", false)
+          .attr("style", "left:"+(mouse[0]+offsetL)+"px;top:"+(mouse[1]+offsetT)+"px")
+          .html(d.properties.name+pop);
+      })
+      .on("mouseout",  function(d,i) {
+        tooltip.classed("hidden", true);
+      });
+
+    //create a custom legend
+    var legend = 'Legend <br />';
+
+    /*
+    var colors = ["#F7FBFF","#DEEBF7","#C6DBEF","#9ECAE1","#6BAED6","#4292C6","#2171B5","#08519C","#08306B"];
+    var split = [10, 20, 40, 60, 200, 300, 400, 700];
+    colors.forEach(function(f,i){
+      if(i==0){
+        var label = '0-'+addCommas(split[i]);
+      } else if(i==8){
+        var label = addCommas(split[i-1])+'-'+addCommas(parseInt(maximum));
+      } else {
+        var label = addCommas(split[i-1])+'-'+addCommas(split[i]);
+      }
+      legend += '<div style="background:'+f+';"></div><label>'+label+'</label>';
+    });
+    */
+
+    var legend_percents = [0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875];
+    legend_percents.forEach(function(percent, i) {
+      var low_percent = percent;
+      var high_percent = percent + 0.125;
+
+      // percent = Math.log(num + 1) / log_maximum
+      var low_value = Math.pow(10, log_maximum * low_percent) - 1;
+      var high_value = Math.pow(10, log_maximum * high_percent) - 1;
+      var average_value = (low_value + high_value) / 2.0;
+
+      var label = addCommas(low_value) + "-" + addCommas(high_value);
+      legend += '<div style="background:'+color(average_value)+';"></div><label>'+label+'</label>';
+    });
+
+    d3.select("#legend").html(legend);
+
+    //create sorted html table
+    var table = d3.select("#info").append("table"),
+        thead = table.append("thead"),
+        tbody = table.append("tbody"),
+        theadtr = thead.append("tr");
+
+        theadtr.append("th").text("Country");
+        theadtr.append("th").text("Value");
+
+    topo.forEach(function(c){
+      if(c.properties.value !== undefined){
+        tbody.append("tr").html('<td>'+c.properties.name+'</td><td>'+addCommas(parseFloat(c.properties.value))+'</td>')
+      }
+    });
+  }
+}
+
+render();
+
+</script>
+</body>
+</html>
