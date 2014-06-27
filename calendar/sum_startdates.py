@@ -23,7 +23,7 @@ inputfilenames = [
     '../by_course/MITx_8.MReV_2013_Summer.csv',
 ]
 delimiter = ','
-quotechar = '|'
+quotechar = '"'
 
 outputfolder = 'summed_startdates'
 
@@ -55,6 +55,3 @@ for inputfilename in inputfilenames:
             csvwriter.writerow(['Date'] + fields)
             for date in sums.keys():
                 csvwriter.writerow([date] +[sums_by_field[fi][date] for fi in fields])
-
-print "Done!"
-raw_input()

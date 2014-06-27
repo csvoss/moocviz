@@ -4,7 +4,7 @@ import csv
 
 inputfilename = '../HMXPC13_DI_v2_5-14-14.csv'
 delimiter = ','
-quotechar = '|'
+quotechar = '"'
 
 course_column = "course_id"
 
@@ -36,6 +36,3 @@ with open(inputfilename, 'rb') as csv_in:
 
     for writer in csvfiles.values():
         writer.close()
-
-print "Done!"
-raw_input()
