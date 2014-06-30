@@ -162,9 +162,7 @@ var INPUTFILE;
 
 function render() {
   FIELD = d3.select("#whichdatafield")[0][0].value;
-  //FIELD = 'grade';
   INPUTFILE = 'summed_by_country/' + d3.select("#whichinputfile")[0][0].value + '.csv';
-  //INPUTFILE = 'summed_by_country/HarvardX_CB22x_2013_Spring.csv'
   redraw();
 }
 
@@ -173,7 +171,7 @@ function throttle() {
   window.clearTimeout(throttleTimer);
     throttleTimer = window.setTimeout(function() {
       redraw();
-    }, 200);
+    }, 1);
 }
 function redraw() {
   d3.select('svg').remove();
@@ -274,8 +272,12 @@ function draw() {
       return d3.descending(parseFloat(a.properties.value), parseFloat(b.properties.value)) 
     });
 
+    function log10(num) {
+      return Math.log(num) / Math.log(10);
+    }
+
     var maximum = topo[0].properties.value * 1.0;
-    var log_maximum = Math.log10(maximum + 1);
+    var log_maximum = log10(maximum + 1);
     var R = 15, G = 30, B = 135; // a nice dark blue
     R = 255-R;
     G = 255-G;
@@ -283,7 +285,7 @@ function draw() {
 
     function color(num) {
       if (num==0) return "white";
-      percent = Math.log10(num + 1) / log_maximum;
+      percent = log10(num + 1) / log_maximum;
       var r = Math.round(255 - R*percent);
       var g = Math.round(255 - G*percent);
       var b = Math.round(255 - B*percent);
