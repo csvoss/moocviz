@@ -159,10 +159,12 @@ div.tooltip {
 
 var FIELD;
 var INPUTFILE;
+var LOGSCALED;
 
 function render() {
   FIELD = d3.select("#whichdatafield")[0][0].value;
   INPUTFILE = 'summed_by_country/' + d3.select("#whichinputfile")[0][0].value + '.csv';
+  LOGSCALED = true;
   redraw();
 }
 
@@ -243,6 +245,10 @@ function addCommas(nStr){
   return x1 + x2;
 }
 
+function countriesEqual(country_name, smaller_name) {
+  return country_name == smaller_name || (country_name.indexOf(smaller_name) != -1 && country_name != "Nigeria") ;
+}
+
 function draw() {
   queue()
       .defer(d3.json, "data/world-110m-cia.json")
@@ -256,7 +262,7 @@ function draw() {
 
     //update topo with population density
     topo.forEach(function(f){
-      var cpop = population.filter(function(a){ return a.Country.contains(f.properties.name)});
+      var cpop = population.filter(function(a){ return countriesEqual(a.Country, f.properties.name)});
       if(cpop.length>0){
         var carea = area.filter(function(a){ return a.code == f.properties.iso});
         if(carea.length>0){
@@ -273,7 +279,7 @@ function draw() {
     });
 
     function log10(num) {
-      return Math.log(num) / Math.log(10);
+      return Math.log(num) / Math.log(3);
     }
 
     var maximum = topo[0].properties.value * 1.0;
@@ -285,7 +291,13 @@ function draw() {
 
     function color(num) {
       if (num==0) return "white";
-      percent = log10(num + 1) / log_maximum;
+      var percent;
+      if (LOGSCALED) {
+        percent = log10(num + 1) / log_maximum;
+      }
+      else {
+        percent = num / maximum;
+      }
       var r = Math.round(255 - R*percent);
       var g = Math.round(255 - G*percent);
       var b = Math.round(255 - B*percent);
@@ -325,28 +337,13 @@ function draw() {
 
     //create a custom legend
     var legend = 'Legend <br />';
-
-    /*
-    var colors = ["#F7FBFF","#DEEBF7","#C6DBEF","#9ECAE1","#6BAED6","#4292C6","#2171B5","#08519C","#08306B"];
-    var split = [10, 20, 40, 60, 200, 300, 400, 700];
-    colors.forEach(function(f,i){
-      if(i==0){
-        var label = '0-'+addCommas(split[i]);
-      } else if(i==8){
-        var label = addCommas(split[i-1])+'-'+addCommas(parseInt(maximum));
-      } else {
-        var label = addCommas(split[i-1])+'-'+addCommas(split[i]);
-      }
-      legend += '<div style="background:'+f+';"></div><label>'+label+'</label>';
-    });
-    */
-
     var legend_percents = [0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875];
     legend_percents.forEach(function(percent, i) {
       var low_percent = percent;
       var high_percent = percent + 0.125;
 
       // percent = Math.log(num + 1) / log_maximum
+      // TODO: use LOGSCALED here
       var low_value = Math.pow(10, log_maximum * low_percent) - 1;
       var high_value = Math.pow(10, log_maximum * high_percent) - 1;
       var average_value = (low_value + high_value) / 2.0;
