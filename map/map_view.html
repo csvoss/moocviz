@@ -278,16 +278,15 @@ function draw() {
 
     var maximum = topo[0].properties.value * 1.0;
     var log_maximum = log10(maximum + 1);
-    var R = 15, G = 30, B = 135; // a nice dark blue
-    var DELTA_R = 255-R;
-    var DELTA_G = 255-G;
-    var DELTA_B = 255-B;
 
     function color(num) {
       // Returns a logarithmically-scaled shade of blue.
       // A higher value of num --> a darker blue
       // (more intense colors are FARTHER from 255)
-      if (num==0) return "white";
+      var R = 15, G = 30, B = 135; // a nice dark blue
+      var DELTA_R = 255-R;
+      var DELTA_G = 255-G;
+      var DELTA_B = 255-B;
       percent = log10(num + 1) / log_maximum;
       var r = Math.round(255 - DELTA_R*percent);
       var g = Math.round(255 - DELTA_G*percent);
