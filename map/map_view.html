@@ -9,45 +9,46 @@
   width:50%;
 }
 
-#legend{
-  margin:10px 5% 10px 20px;
+#key, #other {
+  float:left;
+  margin-top: 10px;
+  padding:10px;
+  border: 2px solid #ccc;
+}
+#legend {
   float:right;
   background: #fff;
-  border: 2px solid #ccc;
-  padding:10px 10px 25px;
-  width: 230px;
-  height: 160px;
+  width:320px;
 }
-#legend div {
+#legend div.box {
   clear:both;
   margin-right:10px;
   width:15px;
   height:15px;
   float:left;
+  border: 1px solid #999;
 }
 #legend label {
-  width: 200px;
+  width: 250px;
   float:left;
 }
 
 h2{
-  margin: 10px 30%;
-  width: 40%;
-  text-align: center;
-  padding: 2px 4px;
+  font-size: 100%;
+  margin:0px;
   clear: both;
 }
 
 #container {
-  margin:0 5%;
-  padding:0px;
-  border:2px solid #d0d0d0;
-  border-radius: 5px;
-  height:100%;
+  margin:10px;
+  padding:10px;
+  padding-right:0px;
+  border:2px solid #ccc;
+  height:550px;
   clear:both;
 }
-.country {fill:#ccc;}
 
+.country {fill:#ccc;}
 
 .hidden { 
   display: none; 
@@ -80,7 +81,17 @@ div.tooltip {
   stroke-opacity: .5;
 }
 
+.chart rect {
+  fill: steelblue;
+}
+
+.chart text {
+  fill: white;
+  font: 10px sans-serif;
+}
+
 </style>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <script type="text/javascript">
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-941940-28']);
@@ -94,63 +105,54 @@ div.tooltip {
 </script>
 </head>
 <body>
-
-  <div id="top">
-    <h1>World Map Visualization</h1>
-    <p>Select by course:  &nbsp;
-    <select class="form-control" id="whichinputfile" onchange="render()">
-        <option>All_Courses</option>
-        <option>HarvardX_CB22x_2013_Spring</option>
-        <option>HarvardX_CS50x_2012</option>
-        <option>HarvardX_ER22x_2013_Spring</option>
-        <option>HarvardX_PH207x_2012_Fall</option>
-        <option>HarvardX_PH278x_2013_Spring</option>
-        <option>MITx_14.73x_2013_Spring</option>
-        <option>MITx_2.01x_2013_Spring</option>
-        <option>MITx_3.091x_2012_Fall</option>
-        <option>MITx_3.091x_2013_Spring</option>
-        <option>MITx_6.002x_2012_Fall</option>
-        <option>MITx_6.002x_2013_Spring</option>
-        <option>MITx_6.00x_2012_Fall</option>
-        <option>MITx_6.00x_2013_Spring</option>
-        <option>MITx_7.00x_2013_Spring</option>
-        <option>MITx_8.02x_2013_Spring</option>
-        <option>MITx_8.MReV_2013_Summer</option>
-    </select>
-  </p>
-
-    <p>Select by data field:  &nbsp;
-    <select class="form-control" id="whichdatafield" onchange="render()">
-        <option>registered</option>
-        <option>viewed</option>
-        <option>explored</option>
-        <option>certified</option>
-        <option>grade</option>
-        <option>nevents</option>
-        <option>ndays_act</option>
-        <option>nplay_video</option>
-        <option>nchapters</option>
-        <option>nforum_posts</option>
-        <option>registered_avg</option>
-        <option>viewed_avg</option>
-        <option>explored_avg</option>
-        <option>certified_avg</option>
-        <option>grade_avg</option>
-        <option>nevents_avg</option>
-        <option>ndays_act_avg</option>
-        <option>nplay_video_avg</option>
-        <option>nchapters_avg</option>
-        <option>nforum_posts_avg</option>
-    </select>
-  </p>
-
+  <div id="container">
+  <select class="form-control" id="whichinputfile" onchange="refresh()">
+    <option>All Courses</option>
+    <option>HarvardX CB22x, 2013 Spring</option>
+    <option>HarvardX CS50x, 2012</option>
+    <option>HarvardX ER22x, 2013 Spring</option>
+    <option>HarvardX PH207x, 2012 Fall</option>
+    <option>HarvardX PH278x, 2013 Spring</option>
+    <option>MITx 14.73x, 2013 Spring</option>
+    <option>MITx 2.01x, 2013 Spring</option>
+    <option>MITx 3.091x, 2012 Fall</option>
+    <option>MITx 3.091x, 2013 Spring</option>
+    <option>MITx 6.002x, 2012 Fall</option>
+    <option>MITx 6.002x, 2013 Spring</option>
+    <option>MITx 6.00x, 2012 Fall</option>
+    <option>MITx 6.00x, 2013 Spring</option>
+    <option>MITx 7.00x, 2013 Spring</option>
+    <option>MITx 8.02x, 2013 Spring</option>
+    <option>MITx 8.MReV, 2013 Summer</option>
+  </select>
+  <select class="form-control" id="whichdatafield" onchange="refresh()">
+    <option>number of students that registered for the course</option>
+    <option>number of students that viewed the course</option>
+    <option>number of students that explored the course content</option>
+    <option>number of students that were certified</option>
+    <option>cumulative grade (decimal)</option>
+    <option>cumulative number of events</option>
+    <option>cumulative number of days active</option>
+    <option>cumulative number of video plays</option>
+    <option>cumulative number of chapters accessed</option>
+    <option>cumulative number of forum posts</option>
+    <option>probability of viewing the course (decimal)</option>
+    <option>probability of exploring the course content (decimal)</option>
+    <option>probability of becoming certified (decimal)</option>
+    <option>average grade (decimal)</option>
+    <option>average number of events</option>
+    <option>average number of days active</option>
+    <option>average number of video plays</option>
+    <option>average number of chapters accessed</option>
+    <option>average number of forum posts</option>
+  </select>
+  <input type="checkbox" id="whichscale" onchange="refresh()">Logarithmic Scale</input>
+    <div id="legend">
+      <div id="key"></div>
+      <div id="other"></div>
+    </div>
   </div>
-  <div id="legend"></div>
-
-  <div id="container"></div>
-
   <div id="info"></div>
-
 <script src="js/d3.min.js"></script>
 <script src="js/topojson.v1.min.js"></script>
 <script src="js/d3.geo.projection.v0.min.js"></script>
@@ -161,10 +163,55 @@ var FIELD;
 var INPUTFILE;
 var LOGSCALED;
 
-function render() {
-  FIELD = d3.select("#whichdatafield")[0][0].value;
-  INPUTFILE = 'summed_by_country/' + d3.select("#whichinputfile")[0][0].value + '.csv';
-  LOGSCALED = true;
+var LOGBASE = 10;
+
+var inputFileNames = {
+  "All Courses": "summed_by_country/HMXPC13_DI_v2_5-14-14.csv",
+  "HarvardX CB22x, 2013 Spring": "summed_by_country/HarvardX_CB22x_2013_Spring.csv",
+  "HarvardX CS50x, 2012": "summed_by_country/HarvardX_CS50x_2012.csv",
+  "HarvardX ER22x, 2013 Spring": "summed_by_country/HarvardX_ER22x_2013_Spring.csv",
+  "HarvardX PH207x, 2012 Fall": "summed_by_country/HarvardX_PH207x_2012_Fall.csv",
+  "HarvardX PH278x, 2013 Spring": "summed_by_country/HarvardX_PH278x_2013_Spring.csv",
+  "MITx 14.73x, 2013 Spring": "summed_by_country/MITx_14.73x_2013_Spring.csv",
+  "MITx 2.01x, 2013 Spring": "summed_by_country/MITx_2.01x_2013_Spring.csv",
+  "MITx 3.091x, 2012 Fall": "summed_by_country/MITx_3.091x_2012_Fall.csv",
+  "MITx 3.091x, 2013 Spring": "summed_by_country/MITx_3.091x_2013_Spring.csv",
+  "MITx 6.002x, 2012 Fall": "summed_by_country/MITx_6.002x_2012_Fall.csv",
+  "MITx 6.002x, 2013 Spring": "summed_by_country/MITx_6.002x_2013_Spring.csv",
+  "MITx 6.00x, 2012 Fall": "summed_by_country/MITx_6.00x_2012_Fall.csv",
+  "MITx 6.00x, 2013 Spring": "summed_by_country/MITx_6.00x_2013_Spring.csv",
+  "MITx 7.00x, 2013 Spring": "summed_by_country/MITx_7.00x_2013_Spring.csv",
+  "MITx 8.02x, 2013 Spring": "summed_by_country/MITx_8.02x_2013_Spring.csv",
+  "MITx 8.MReV, 2013 Summer": "summed_by_country/MITx_8.MReV_2013_Summer.csv",
+};
+
+var dataFieldNames = {
+  "number of students that registered for the course": "registered",
+  "number of students that viewed the course": "viewed",
+  "number of students that explored the course content": "explored",
+  "number of students that were certified": "certified",
+  "cumulative grade (decimal)": "grade",
+  "cumulative number of events": "nevents",
+  "cumulative number of days active": "ndays_act",
+  "cumulative number of video plays": "nplay_video",
+  "cumulative number of chapters accessed": "nchapters",
+  "cumulative number of forum posts": "nforum_posts",
+  "probability of viewing the course (decimal)": "viewed_avg",
+  "probability of exploring the course content (decimal)": "explored_avg",
+  "probability of becoming certified (decimal)": "certified_avg",
+  "average grade (decimal)": "grade_avg",
+  "average number of events": "nevents_avg",
+  "average number of days active": "ndays_act_avg",
+  "average number of video plays": "nplay_video_avg",
+  "average number of chapters accessed": "nchapters_avg",
+  "average number of forum posts": "nforum_posts_avg",
+};
+
+function refresh() {
+  FIELD = dataFieldNames[d3.select("#whichdatafield")[0][0].value];
+  INPUTFILE = inputFileNames[d3.select("#whichinputfile")[0][0].value];
+  LOGSCALED = $('#whichscale').prop('checked');
+  console.log(LOGSCALED);
   redraw();
 }
 
@@ -179,65 +226,65 @@ function redraw() {
   d3.select('svg').remove();
   document.getElementById('info').innerHTML = "";
   setup();
-  draw(topo);
+  drawMap(topo);
 }
 d3.select(window).on("resize", throttle);
 
 //queue
 (function(){function n(n){function t(){for(;f=a<c.length&&n>p;){var u=a++,t=c[u],r=l.call(t,1);r.push(e(u)),++p,t[0].apply(null,r)}}function e(n){return function(u,l){--p,null==d&&(null!=u?(d=u,a=s=0/0,r()):(c[n]=l,--s?f||t():r()))}}function r(){null!=d?v(d):i?v(d,c):v.apply(null,[d].concat(c))}var o,f,i,c=[],a=0,p=0,s=0,d=null,v=u;return n||(n=1/0),o={defer:function(){return d||(c.push(arguments),++s,t()),o},await:function(n){return v=n,i=!1,s||r(),o},awaitAll:function(n){return v=n,i=!0,s||r(),o}}}function u(){}"undefined"==typeof module?self.queue=n:module.exports=n,n.version="1.0.4";var l=[].slice})();
 
-var topo,projection,path,svg,g,graticule;
-
+var topo, projection, path, svg, g, graticule;
 var tooltip = d3.select("body").append("div").attr("class", "tooltip hidden");
-
 setup();
 
 function setup() {
-
-  var width = document.getElementById('container').offsetWidth;
+  var width = document.getElementById('container').offsetWidth - 370;  // subtract px for the legend
   var height = width / 2;
-
-  //projection = d3.geo.mercator().translate([0, 0]).scale(width / 2 / Math.PI);
   projection = d3.geo.hammer().translate([0, 0]).scale(width / 2 / Math.PI);
-
   path = d3.geo.path().projection(projection);
-
   graticule = d3.geo.graticule();
-
   svg = d3.select("#container").append("svg")
       .attr("width", width)
       .attr("height", height);
-
   var outterg = svg.append("g").attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-
   g = outterg.append("g").attr("id", "innerg");
-
   g.append("defs").append("path")
       .datum({type: "Sphere"})
       .attr("id", "sphere")
       .attr("d", path);
-
   g.append("use")
       .attr("class", "stroke")
       .attr("xlink:href", "#sphere");
-
   g.append("use")
       .attr("class", "fill")
       .attr("xlink:href", "#sphere");
-
   g.append("path")
       .datum(graticule)
       .attr("class", "graticule")
       .attr("d", path);
 }
 
-function addCommas(nStr){
-  var numDigits = 6;
+function prettyNum(nStr) {
+  var n = parseFloat(nStr);
+  if (n == 0) return 0;
+  return addCommas(reduceSigFigs(n));
+}
+
+function reduceSigFigs(n) {
+  // Reduce the number of sig figs in number string nStr
+  // Note: nStr should not have commas
+  // Note: nStr *may* have decimals
+  var sig = 3;
+  var mult = Math.pow(10, sig - Math.floor(Math.log(n) / Math.LN10) - 1);
+  return Math.round(n * mult) / mult;
+}
+
+function addCommas(nStr) {
+  // Add commas to print e.g. thousands, millions
   nStr += '';
   var x = nStr.split('.');
   var x1 = x[0];
-  var x2len = Math.max(0, numDigits-x1.length); // for trimming extra decimals
-  var x2 = x.length > 1 ? '.' + x[1].slice(0, x2len) : '';
+  var x2 = x.length > 1 ? '.' + x[1] : '';
   var rgx = /(\d+)(\d{3})/;
   while (rgx.test(x1)) {
     x1 = x1.replace(rgx, '$1' + ',' + '$2');
@@ -249,20 +296,20 @@ function countriesEqual(country_name, smaller_name) {
   return country_name == smaller_name || (country_name.indexOf(smaller_name) != -1 && country_name != "Nigeria") ;
 }
 
-function draw() {
+function drawMap() {
   queue()
       .defer(d3.json, "data/world-110m-cia.json")
       .defer(d3.csv, INPUTFILE)
       .defer(d3.csv, "data/area.csv")
       .await(ready);
 
-  function ready(error, world, population, area) {
+  function ready(error, world, countries, area) {
 
     topo = topojson.feature(world, world.objects.countries).features;
 
-    //update topo with population density
+    //update topo with data about the relevant FIELD
     topo.forEach(function(f){
-      var cpop = population.filter(function(a){ return countriesEqual(a.Country, f.properties.name)});
+      var cpop = countries.filter(function(a){ return countriesEqual(a.Country, f.properties.name)});
       if(cpop.length>0){
         var carea = area.filter(function(a){ return a.code == f.properties.iso});
         if(carea.length>0){
@@ -271,19 +318,26 @@ function draw() {
       }
     });
 
-    //sort it by density
+    //sort the arrays in decreasing order of intensity
     topo.sort(function(a, b){
       if (a.properties.value == undefined) a.properties.value = 0;
       if (b.properties.value == undefined) b.properties.value = 0;
       return d3.descending(parseFloat(a.properties.value), parseFloat(b.properties.value)) 
     });
 
-    function log10(num) {
-      return Math.log(num) / Math.log(3);
+    countries.sort(function(a, b) {
+      return d3.descending(parseFloat(a[FIELD]), parseFloat(b[FIELD]));
+    });
+
+    function logB(num) {
+      return Math.log(num) / Math.log(LOGBASE);
+    }
+    function powB(num) {
+      return Math.pow(LOGBASE, num);
     }
 
     var maximum = topo[0].properties.value * 1.0;
-    var log_maximum = log10(maximum + 1);
+    var log_maximum = logB(maximum + 1);
 
     function color(num) {
       // Returns a logarithmically-scaled shade of blue.
@@ -294,7 +348,7 @@ function draw() {
       var DELTA_R = 255-R, DELTA_G = 255-G, DELTA_B = 255-B;
       var percent;
       if (LOGSCALED) {
-        percent = log10(num + 1) / log_maximum;
+        percent = logB(num + 1) / log_maximum;
       }
       else {
         percent = num / maximum;
@@ -326,34 +380,54 @@ function draw() {
       .style("stroke", "#111")
       .on("mousemove", function(d,i) {
         var mouse = d3.mouse(svg.node()).map( function(d) { return parseInt(d); } );
-        var pop = ' | '+addCommas(parseFloat(d.properties.value));
+        var value = ': <span style="color:blue;"><b>'+prettyNum(parseFloat(d.properties.value))+'</b></span>';
 
         tooltip.classed("hidden", false)
           .attr("style", "left:"+(mouse[0]+offsetL)+"px;top:"+(mouse[1]+offsetT)+"px")
-          .html(d.properties.name+pop);
+          .html(d.properties.name+value);
       })
       .on("mouseout",  function(d,i) {
         tooltip.classed("hidden", true);
       });
 
     //create a custom legend
-    var legend = 'Legend <br />';
+    var legend = '<h2>Legend</h2>';
     var legend_percents = [0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875];
     legend_percents.forEach(function(percent, i) {
       var low_percent = percent;
       var high_percent = percent + 0.125;
 
-      // percent = Math.log(num + 1) / log_maximum
-      // TODO: use LOGSCALED here
-      var low_value = Math.pow(10, log_maximum * low_percent) - 1;
-      var high_value = Math.pow(10, log_maximum * high_percent) - 1;
+      if (LOGSCALED) {
+        // percent = Math.log(num + 1) / log_maximum
+        var low_value = powB(log_maximum * low_percent) - 1;
+        var high_value = powB(log_maximum * high_percent) - 1;
+      } else {
+        var low_value = low_percent * maximum;
+        var high_value = high_percent * maximum;
+      }
       var average_value = (low_value + high_value) / 2.0;
 
-      var label = addCommas(low_value) + "-" + addCommas(high_value);
-      legend += '<div style="background:'+color(average_value)+';"></div><label>'+label+'</label>';
+      var label = prettyNum(low_value) + "-" + prettyNum(high_value);
+      legend += '<div class="box" style="background:'+color(average_value)+';"></div><label>'+label+'</label>';
     });
 
-    d3.select("#legend").html(legend);
+    var otherCountries = '<h2>Other Regions</h2>';
+
+    var otherLabels = ["Other South Asia", "Other South America", "Other East Asia", "Other Oceania", "Other Europe", "Other North & Central Amer., Caribbean", "Unknown/Other", "Other Africa", "Other Middle East/Central Asia"];
+
+    console.log(countries);
+    console.log(countries[0]);
+
+    countries.forEach(function(country, i) {
+      if ($.inArray(country.Country, otherLabels) != -1) {
+        var value = parseFloat(country[FIELD]);
+        var label = country.Country;
+        otherCountries += '<div class="box" style="background:'+color(value)+';"></div><label>'+label+': '+prettyNum(value)+'</label>'; 
+      }
+    });
+
+    $("#key").html(legend);
+    $("#other").html(otherCountries);
 
     //create sorted html table
     var table = d3.select("#info").append("table"),
@@ -366,13 +440,13 @@ function draw() {
 
     topo.forEach(function(c){
       if(c.properties.value !== undefined){
-        tbody.append("tr").html('<td>'+c.properties.name+'</td><td>'+addCommas(parseFloat(c.properties.value))+'</td>')
+        tbody.append("tr").html('<td>'+c.properties.name+'</td><td>'+prettyNum(parseFloat(c.properties.value))+'</td>')
       }
     });
   }
 }
 
-render();
+refresh();
 
 </script>
 </body>
