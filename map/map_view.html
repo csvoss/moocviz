@@ -6,22 +6,31 @@
 body {
   font:"Palatino Linotype", serif;
 }
+
+select, option {
+  font-size: 13pt;
+  font:"Palatino Linotype", serif;
+}
+
 #top{
   float:left;  
   margin:0 0 10px 5%;
   width:50%;
 }
 
-#key, #other {
+#key, #other, #info {
   float:left;
   margin-top: 10px;
   padding:10px;
   border: 2px solid #ccc;
+  clear:left;
+  width:280px;
 }
 #legend {
   float:right;
   background: #fff;
   width:320px;
+  margin-bottom:20px;
 }
 #legend div.box {
   clear:both;
@@ -46,12 +55,12 @@ h2{
   margin:10px;
   padding:10px;
   padding-right:0px;
-  border:2px solid #ccc;
-  height:550px;
   clear:both;
 }
 
-.country {fill:#ccc;}
+.country {
+  fill:#DCDCDC;
+}
 
 .hidden { 
   display: none; 
@@ -65,13 +74,6 @@ div.tooltip {
   box-shadow: 0px 0px 2px 0px #a6a6a6; 
   opacity: 0.9; 
   position: absolute;
-}
-
-#info{
-  margin:10px 10%;
-  background: #fff;
-  border: 2px solid #ccc;
-  padding:10px;
 }
 
 .fill {
@@ -129,33 +131,32 @@ div.tooltip {
     <option>MITx 8.MReV, 2013 Summer</option>
   </select>
   <select class="form-control" id="whichdatafield" onchange="refresh()">
-    <option>number of students that registered for the course</option>
-    <option>number of students that viewed the course</option>
-    <option>number of students that explored the course content</option>
-    <option>number of students that were certified</option>
-    <option>cumulative number of events</option>
-    <option>cumulative number of days active</option>
-    <option>cumulative number of video plays</option>
-    <option>cumulative number of chapters accessed</option>
-    <option>cumulative number of forum posts</option>
-    <option>probability of viewing the course (decimal)</option>
-    <option>probability of exploring the course content (decimal)</option>
-    <option>probability of becoming certified (decimal)</option>
-    <option>average grade (decimal)</option>
-    <option>average number of events</option>
-    <option>average number of days active</option>
-    <option>average number of video plays</option>
-    <option>average number of chapters accessed</option>
-    <option>average number of forum posts</option>
+    <option>Number of students that registered for the course</option>
+    <option>Number of students that viewed the course</option>
+    <option>Number of students that explored the course content</option>
+    <option>Number of students that were certified</option>
+    <option>Total number of events</option>
+    <option>Total number of days active</option>
+    <option>Total number of video plays</option>
+    <option>Total number of chapters accessed</option>
+    <option>Total number of forum posts</option>
+    <option>Probability of viewing the course (decimal)</option>
+    <option>Probability of exploring the course content (decimal)</option>
+    <option>Probability of becoming certified (decimal)</option>
+    <option>Average grade (decimal)</option>
+    <option>Average number of events</option>
+    <option>Average number of days active</option>
+    <option>Average number of video plays</option>
+    <option>Average number of chapters accessed</option>
+    <option>Average number of forum posts</option>
   </select>
   <input type="checkbox" id="whichscale" onchange="refresh()">Logarithmic Scale</input>
     <div id="legend">
       <div id="key"></div>
-      <div id="other"></div>
+      <div id="info"></div>
     </div>
   </div>
-  <div id="info"></div>
-<script src="js/d3.min.js"></script>
+  <script src="js/d3.min.js"></script>
 <script src="js/topojson.v1.min.js"></script>
 <script src="js/d3.geo.projection.v0.min.js"></script>
 
@@ -167,7 +168,7 @@ var LOGSCALED;
 
 var LOGBASE = 10;
 
-var inputFileNames = {
+var INPUT_FILE_NAMES = {
   "All Courses": "summed_by_country/HMXPC13_DI_v2_5-14-14.csv",
   "HarvardX CB22x, 2013 Spring": "summed_by_country/HarvardX_CB22x_2013_Spring.csv",
   "HarvardX CS50x, 2012": "summed_by_country/HarvardX_CS50x_2012.csv",
@@ -187,32 +188,45 @@ var inputFileNames = {
   "MITx 8.MReV, 2013 Summer": "summed_by_country/MITx_8.MReV_2013_Summer.csv",
 };
 
-var dataFieldNames = {
-  "number of students that registered for the course": "registered",
-  "number of students that viewed the course": "viewed",
-  "number of students that explored the course content": "explored",
-  "number of students that were certified": "certified",
-  "cumulative number of events": "nevents",
-  "cumulative number of days active": "ndays_act",
-  "cumulative number of video plays": "nplay_video",
-  "cumulative number of chapters accessed": "nchapters",
-  "cumulative number of forum posts": "nforum_posts",
-  "probability of viewing the course (decimal)": "viewed_avg",
-  "probability of exploring the course content (decimal)": "explored_avg",
-  "probability of becoming certified (decimal)": "certified_avg",
-  "average grade (decimal)": "grade_avg",
-  "average number of events": "nevents_avg",
-  "average number of days active": "ndays_act_avg",
-  "average number of video plays": "nplay_video_avg",
-  "average number of chapters accessed": "nchapters_avg",
-  "average number of forum posts": "nforum_posts_avg",
+var DATA_FIELD_NAMES = {
+  "Number of students that registered for the course": "registered",
+  "Number of students that viewed the course": "viewed",
+  "Number of students that explored the course content": "explored",
+  "Number of students that were certified": "certified",
+  "Total number of events": "nevents",
+  "Total number of days active": "ndays_act",
+  "Total number of video plays": "nplay_video",
+  "Total number of chapters accessed": "nchapters",
+  "Total number of forum posts": "nforum_posts",
+  "Probability of viewing the course (decimal)": "viewed_avg",
+  "Probability of exploring the course content (decimal)": "explored_avg",
+  "Probability of becoming certified (decimal)": "certified_avg",
+  "Average grade (decimal)": "grade_avg",
+  "Average number of events": "nevents_avg",
+  "Average number of days active": "ndays_act_avg",
+  "Average number of video plays": "nplay_video_avg",
+  "Average number of chapters accessed": "nchapters_avg",
+  "Average number of forum posts": "nforum_posts_avg",
 };
 
+var OTHER_REGIONS = { "Other Europe": ["United Kingdom", "Spain", "Germany", "Poland", "Greece", "Ukraine", "France", "Portugal", "Albania", "Austria", "Romania", "Norway", "Serbia", "Netherlands", "Croatia", "Slovakia", "Slovenia", "Belgium", "Bulgaria", "Bosnia and Herzegovina", "Belarus", "Sweden", "Switzerland", "Ireland", "Estonia", "Iceland", "Italy", "Finland", "Denmark", "Northern Cyprus", "Hungary", "Luxembourg", "Latvia", "Moldova", "Lithuania", "Montenegro", "Kosovo", "Macedonia", "Cyprus", "Czech Republic"], "Other Africa": ["Egypt", "Botswana", "Burkina Faso", "Cote d'Ivoire", "Cameroon", "Eritrea", "The Gambia", "Guinea-Bissau", "Kenya", "Lesotho", "Liberia", "Mali", "Central African Republic", "Libya", "Guinea", "Niger", "Malawi", "Mauritania", "Namibia", "Rwanda", "Sudan", "South Africa", "Zambia", "Zimbabwe", "Somaliland", "Somalia", "South Sudan", "Tanzania", "Uganda", "Senegal", "Western Sahara", "Chad", "Mozambique", "Ghana", "Madagascar", "Tunisia", "Togo", "Sierra Leone", "Swaziland", "Gabon", "Djibouti", "Equatorial Guinea", "Democratic Republic of the Congo", "Algeria", "Republic of the Congo", "Ethiopia", "Burundi", "Benin", "Nigeria", "Angola", "Morocco"], "Other Middle East/Central Asia": ["Armenia", "Georgia", "Azerbaijan", "Kazakhstan", "United Arab Emirates", "Russia", "Pakistan", "Jordan", "Israel", "Lebanon", "Iran", "Iraq", "Palestine", "Syria", "Yemen", "Uzbekistan", "Kyrgyzstan", "Tajikistan", "Turkmenistan", "Turkey", "Kuwait", "Oman", "Qatar", "Saudi Arabia", "Afghanistan"], "Other South Asia": ["Sri Lanka", "Bhutan", "Nepal", "Bangladesh", "Cambodia", "Laos", "Burma", "Thailand", "India"], "Other South America": ["Argentina", "Ecuador", "Chile", "Venezuela", "Paraguay", "Suriname", "Uruguay", "Peru", "Falkland Islands", "Guyana", "Brazil", "Bolivia", "Colombia"], "Other East Asia": ["China", "Vietnam", "Mongolia", "Japan", "North Korea", "South Korea", "Taiwan"], "Other North & Central Amer., Caribbean": ["United States", "Canada", "Haiti", "Guatemala", "Cuba", "Jamaica", "Honduras", "Dominican Republic", "Bahamas", "Belize", "Mexico", "El Salvador", "Nicaragua", "Costa Rica", "Trinidad and Tobago", "Panama", "Puerto Rico"], "Unknown/Other": ["Greenland", "Antarctica", "French Southern and Antarctic Lands"], "Other Oceania": ["Fiji", "Malaysia", "New Caledonia", "Philippines", "Solomon Islands", "New Zealand", "Papua New Guinea", "Brunei", "Australia", "Timor-Leste", "Vanuatu", "Indonesia"]}
+
+var OTHER_LABELS = ["Other South Asia", "Other South America", "Other East Asia", "Other Oceania", "Other Europe", "Other North & Central Amer., Caribbean", "Unknown/Other", "Other Africa", "Other Middle East/Central Asia"];
+
+var OTHER_DATA = {};
+
+var COUNTRY_TO_OTHER = {};
+OTHER_LABELS.forEach(function(otherLabel, i) {
+  var countrylist = OTHER_REGIONS[otherLabel];
+  countrylist.forEach(function(country, i) {
+    COUNTRY_TO_OTHER[country] = otherLabel;
+  });
+});
+
 function refresh() {
-  FIELD = dataFieldNames[d3.select("#whichdatafield")[0][0].value];
-  INPUTFILE = inputFileNames[d3.select("#whichinputfile")[0][0].value];
+  FIELD = DATA_FIELD_NAMES[d3.select("#whichdatafield")[0][0].value];
+  INPUTFILE = INPUT_FILE_NAMES[d3.select("#whichinputfile")[0][0].value];
   LOGSCALED = $('#whichscale').prop('checked');
-  console.log(LOGSCALED);
   redraw();
 }
 
@@ -277,14 +291,15 @@ function prettyNum(numString) {
 function reduceSigFigs(n, sig) {
   // n :: float or float-string
   // sig :: int or int-string
-  // return :: float
+  // return :: float-string
   // Reduce the number of sig figs in float n to `sig`
   // Note: n should not have commas
   // Note: n *may* have decimals
   n = parseFloat(n); // just in case
   sig = parseInt(sig);
   var mult = Math.pow(10, sig - Math.floor(Math.log(n) / Math.LN10) - 1);
-  return Math.round(Math.round(n * mult) / mult);
+  var output = Math.round(n * mult) / mult; 
+  return uberRound(output, 7); // get rid of silly floatingpoint precision problems
 }
 
 function addCommas(numString) {
@@ -301,6 +316,23 @@ function addCommas(numString) {
   }
   return x1 + x2;
 }
+
+function uberRound(value, precision) {
+  var m, f, isHalf, sgn; // helper variables
+  // making sure precision is integer
+  precision |= 0;
+  m = Math.pow(10, precision);
+  value *= m;
+  // sign of the number
+  sgn = (value > 0) | -(value < 0);
+  isHalf = value % 1 === 0.5 * sgn;
+  f = Math.floor(value);
+  if (isHalf) {
+    value = f + (sgn > 0);
+  }
+  return (isHalf ? value : Math.round(value)) / m;
+}
+
 function boldBlue(string) {
   return '<span style="color:rgb(30,60,185);"><b>' + string + '</b></span>';
 }
@@ -321,6 +353,15 @@ function drawMap() {
 
   function ready(error, world, countries) {
 
+    OTHER_LABELS.forEach(function(label, i) {
+      OTHER_DATA[label] = 0;
+    })
+    countries.forEach(function(country, i) {
+      if ($.inArray(country.Country, OTHER_LABELS) != -1) {
+        OTHER_DATA[country.Country] = country;
+      }
+    }); //TODO: If an otherlabel is NOT in the countries data -- e.g. Other Oceania is 0 -- this omits it!!
+
     topo = topojson.feature(world, world.objects.countries).features;
 
     //update topo with data about the relevant FIELD
@@ -337,9 +378,11 @@ function drawMap() {
       if (b.properties.datavalue == undefined) b.properties.datavalue = 0;
       return d3.descending(parseFloat(a.properties.datavalue), parseFloat(b.properties.datavalue)) 
     });
-
     countries.sort(function(a, b) {
       return d3.descending(parseFloat(a[FIELD]), parseFloat(b[FIELD]));
+    });
+    OTHER_LABELS.sort(function(a, b) {
+      return d3.descending(parseFloat(OTHER_DATA[a][FIELD]), parseFloat(OTHER_DATA[b][FIELD]));
     });
 
     function logB(num) {
@@ -348,7 +391,6 @@ function drawMap() {
     function powB(num) {
       return Math.pow(LOGBASE, num);
     }
-
     var maximum = topo[0].properties.datavalue * 1.0;
     var log_maximum = logB(maximum + 1);
 
@@ -356,9 +398,12 @@ function drawMap() {
       // Returns a logarithmically-scaled shade of blue.
       // A higher value of num --> a darker blue
       // (more intense colors are FARTHER from 255)
-      if (num==0) return "white";
+
+      if (num==0) return "rgb("+MAX+","+MAX+","+MAX+")";
+
       var R = 15, G = 30, B = 135; // a nice dark blue
-      var DELTA_R = 255-R, DELTA_G = 255-G, DELTA_B = 255-B;
+      var MAX = 220;
+      var DELTA_R = MAX-R, DELTA_G = MAX-G, DELTA_B = MAX-B;
       var percent;
       if (LOGSCALED) {
         percent = logB(num + 1) / log_maximum;
@@ -366,17 +411,17 @@ function drawMap() {
       else {
         percent = num / maximum;
       }
-      var r = Math.round(255 - DELTA_R*percent);
-      var g = Math.round(255 - DELTA_G*percent);
-      var b = Math.round(255 - DELTA_B*percent);
-      return "rgb(" + r + "," + g + "," + b + ")"
+      var r = Math.round(MAX - DELTA_R*percent);
+      var g = Math.round(MAX - DELTA_G*percent);
+      var b = Math.round(MAX - DELTA_B*percent);
+      return "rgb(" + r + "," + g + "," + b + ")";
     }
 
     var country = d3.select("#innerg").selectAll(".country").data(topo);
 
     //offsets
     var offsetL = document.getElementById('container').offsetLeft+15;
-    var offsetT = document.getElementById('container').offsetTop-5;
+    var offsetT = document.getElementById('container').offsetTop;
 
     country.enter().insert("path")
       .attr("class", "country")
@@ -393,11 +438,19 @@ function drawMap() {
       .style("stroke", "#111")
       .on("mousemove", function(d,i) {
         var mouse = d3.mouse(svg.node()).map( function(d) { return parseInt(d); } );
-        var value = ': '+boldBlue(prettyNum(parseFloat(d.properties.datavalue)));
+
+        if (d.properties.datavalue != 0) {        
+          var name = d.properties.name;
+          var value = d.properties.datavalue;
+        } else {
+          var name = COUNTRY_TO_OTHER[d.properties.name];
+          var c = OTHER_DATA[name];
+          var value = c[FIELD];
+        }
 
         tooltip.classed("hidden", false)
           .attr("style", "left:"+(mouse[0]+offsetL)+"px;top:"+(mouse[1]+offsetT)+"px")
-          .html(d.properties.name+value);
+          .html(name + ': ' + boldBlue(prettyNum(parseFloat(value))));
       })
       .on("mouseout",  function(d,i) {
         tooltip.classed("hidden", true);
@@ -424,40 +477,52 @@ function drawMap() {
       legend += '<div class="box" style="background:'+color(average_value)+';"></div><label>'+label+'</label>';
     });
 
-
     // create the div about other countries
     var otherCountries = '<h2>Other Regions</h2>';
 
-    var otherLabels = ["Other South Asia", "Other South America", "Other East Asia", "Other Oceania", "Other Europe", "Other North & Central Amer., Caribbean", "Unknown/Other", "Other Africa", "Other Middle East/Central Asia"];
-
-    console.log(countries);
-    console.log(countries[0]);
-
-    countries.forEach(function(country, i) {
-      if ($.inArray(country.Country, otherLabels) != -1) {
-        var value = parseFloat(country[FIELD]);
-        var label = country.Country;
-        otherCountries += '<div class="box" style="background:'+color(value)+';"></div><label>'+label+': '+boldBlue(prettyNum(value))+'</label>'; 
-      }
+    OTHER_LABELS.forEach(function(otherLabel, i) {
+      country = OTHER_DATA[otherLabel];
+      var value = parseFloat(country[FIELD]);
+      var label = otherLabel;
+      otherCountries += '<div class="box" style="background:'+color(value)+';"></div><label>'+label+': '+boldBlue(prettyNum(value))+'</label>'; 
     });
 
-    $("#key").html(legend);
     $("#other").html(otherCountries);
 
     //create sorted html table
-    var table = d3.select("#info").append("table"),
+    /*var table = d3.select("#info").append("table"),
         thead = table.append("thead"),
         tbody = table.append("tbody"),
         theadtr = thead.append("tr");
 
-        theadtr.append("th").text("Country");
-        theadtr.append("th").text("Value");
+        theadtr.append("th").text(d3.select("#whichdatafield")[0][0].value);
+        theadtr.append("th").text("");*/
+
+    var empty = true;
+    var bars = '<h2>'+d3.select("#whichdatafield")[0][0].value+'</h2>';
 
     topo.forEach(function(c){
-      if(c.properties.datavalue !== undefined){
-        tbody.append("tr").html('<td>'+c.properties.name+'</td><td>'+prettyNum(parseFloat(c.properties.datavalue))+'</td>')
+      if(c.properties.datavalue !== undefined && c.properties.datavalue > 0){
+        
+        var name = c.properties.name;
+        var value = parseFloat(c.properties.datavalue);
+        var label = name + ': ' + boldBlue(prettyNum(value));
+        var outof = Math.round(250*value/maximum);
+        console.log(outof);
+        bars += '<span style="width:'+outof+'; color:black; border:1px solid black;fill:steelblue; font-size:0.'+outof+'pt;">'+label+', '+outof+'</span><br />';
+        //TODO: These bars are not working yet :(
+        //tbody.append("tr").html('<td>'+c.properties.name+'</td><td>'+boldBlue(prettyNum(parseFloat(c.properties.datavalue)))+'</td>');
+        empty = false;
       }
     });
+    if (empty) {
+      //tbody.append("tr").html('No data.');
+      $("#key").html('<h2>Legend</h2>No data.');
+      $("#info").html(bars + 'No data.');
+    } else{
+      $("#key").html(legend);
+      $("#info").html(bars)
+    }
   }
 }
 
