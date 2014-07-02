@@ -3,6 +3,9 @@
 <meta charset="utf-8">
 <title>World Map</title>
 <style>
+body {
+  font:"Palatino Linotype", serif;
+}
 #top{
   float:left;  
   margin:0 0 10px 5%;
@@ -56,9 +59,9 @@ h2{
 div.tooltip {
   color: #222; 
   background: #fff; 
-  padding: .5em; 
+  padding: 4px; 
   text-shadow: #f5f5f5 0 1px 0;
-  border-radius: 2px; 
+  border-radius: 4px; 
   box-shadow: 0px 0px 2px 0px #a6a6a6; 
   opacity: 0.9; 
   position: absolute;
@@ -130,7 +133,6 @@ div.tooltip {
     <option>number of students that viewed the course</option>
     <option>number of students that explored the course content</option>
     <option>number of students that were certified</option>
-    <option>cumulative grade (decimal)</option>
     <option>cumulative number of events</option>
     <option>cumulative number of days active</option>
     <option>cumulative number of video plays</option>
@@ -190,7 +192,6 @@ var dataFieldNames = {
   "number of students that viewed the course": "viewed",
   "number of students that explored the course content": "explored",
   "number of students that were certified": "certified",
-  "cumulative grade (decimal)": "grade",
   "cumulative number of events": "nevents",
   "cumulative number of days active": "ndays_act",
   "cumulative number of video plays": "nplay_video",
@@ -225,7 +226,7 @@ function throttle() {
 function redraw() {
   d3.select('svg').remove();
   document.getElementById('info').innerHTML = "";
-  setup();
+  setupMap();
   drawMap(topo);
 }
 d3.select(window).on("resize", throttle);
@@ -235,9 +236,9 @@ d3.select(window).on("resize", throttle);
 
 var topo, projection, path, svg, g, graticule;
 var tooltip = d3.select("body").append("div").attr("class", "tooltip hidden");
-setup();
+setupMap();
 
-function setup() {
+function setupMap() {
   var width = document.getElementById('container').offsetWidth - 370;  // subtract px for the legend
   var height = width / 2;
   projection = d3.geo.hammer().translate([0, 0]).scale(width / 2 / Math.PI);
@@ -264,25 +265,34 @@ function setup() {
       .attr("d", path);
 }
 
-function prettyNum(nStr) {
-  var n = parseFloat(nStr);
+function prettyNum(numString) {
+  // numString :: float-string or int-string (e.g. "1342.177")
+  // return :: string (e.g. "1,340")
+  // Pretty-print a number with commas and 3 sig figs
+  var n = parseFloat(numString);
   if (n == 0) return 0;
-  return addCommas(reduceSigFigs(n));
+  return addCommas(reduceSigFigs(n, 3));
 }
 
-function reduceSigFigs(n) {
-  // Reduce the number of sig figs in number string nStr
-  // Note: nStr should not have commas
-  // Note: nStr *may* have decimals
-  var sig = 3;
+function reduceSigFigs(n, sig) {
+  // n :: float or float-string
+  // sig :: int or int-string
+  // return :: float
+  // Reduce the number of sig figs in float n to `sig`
+  // Note: n should not have commas
+  // Note: n *may* have decimals
+  n = parseFloat(n); // just in case
+  sig = parseInt(sig);
   var mult = Math.pow(10, sig - Math.floor(Math.log(n) / Math.LN10) - 1);
-  return Math.round(n * mult) / mult;
+  return Math.round(Math.round(n * mult) / mult);
 }
 
-function addCommas(nStr) {
-  // Add commas to print e.g. thousands, millions
-  nStr += '';
-  var x = nStr.split('.');
+function addCommas(numString) {
+  // numString :: float-string or int-string or float or int
+  // return :: string
+  // Add commas to convert e.g. 45123.7 to 45,123.7
+  numString += '';   // just in case
+  var x = numString.split('.');
   var x1 = x[0];
   var x2 = x.length > 1 ? '.' + x[1] : '';
   var rgx = /(\d+)(\d{3})/;
@@ -291,8 +301,15 @@ function addCommas(nStr) {
   }
   return x1 + x2;
 }
+function boldBlue(string) {
+  return '<span style="color:rgb(30,60,185);"><b>' + string + '</b></span>';
+}
 
 function countriesEqual(country_name, smaller_name) {
+  // country_name :: string
+  // smaller_name :: string
+  // Return true if the larger string `country_name` (e.g. "Russian Federation") is equivalent
+  // to the sometimes-smaller string `smaller_name` (e.g. "Russia")  UNLESS  Nigeria/Niger is involved
   return country_name == smaller_name || (country_name.indexOf(smaller_name) != -1 && country_name != "Nigeria") ;
 }
 
@@ -300,10 +317,9 @@ function drawMap() {
   queue()
       .defer(d3.json, "data/world-110m-cia.json")
       .defer(d3.csv, INPUTFILE)
-      .defer(d3.csv, "data/area.csv")
       .await(ready);
 
-  function ready(error, world, countries, area) {
+  function ready(error, world, countries) {
 
     topo = topojson.feature(world, world.objects.countries).features;
 
@@ -311,18 +327,15 @@ function drawMap() {
     topo.forEach(function(f){
       var cpop = countries.filter(function(a){ return countriesEqual(a.Country, f.properties.name)});
       if(cpop.length>0){
-        var carea = area.filter(function(a){ return a.code == f.properties.iso});
-        if(carea.length>0){
-          f.properties.value = parseFloat(cpop[0][FIELD]);
-        }
+        f.properties.datavalue = parseFloat(cpop[0][FIELD]);
       }
     });
 
     //sort the arrays in decreasing order of intensity
     topo.sort(function(a, b){
-      if (a.properties.value == undefined) a.properties.value = 0;
-      if (b.properties.value == undefined) b.properties.value = 0;
-      return d3.descending(parseFloat(a.properties.value), parseFloat(b.properties.value)) 
+      if (a.properties.datavalue == undefined) a.properties.datavalue = 0;
+      if (b.properties.datavalue == undefined) b.properties.datavalue = 0;
+      return d3.descending(parseFloat(a.properties.datavalue), parseFloat(b.properties.datavalue)) 
     });
 
     countries.sort(function(a, b) {
@@ -336,7 +349,7 @@ function drawMap() {
       return Math.pow(LOGBASE, num);
     }
 
-    var maximum = topo[0].properties.value * 1.0;
+    var maximum = topo[0].properties.datavalue * 1.0;
     var log_maximum = logB(maximum + 1);
 
     function color(num) {
@@ -362,8 +375,8 @@ function drawMap() {
     var country = d3.select("#innerg").selectAll(".country").data(topo);
 
     //offsets
-    var offsetL = document.getElementById('container').offsetLeft+30;
-    var offsetT = document.getElementById('container').offsetTop-30;
+    var offsetL = document.getElementById('container').offsetLeft+15;
+    var offsetT = document.getElementById('container').offsetTop-5;
 
     country.enter().insert("path")
       .attr("class", "country")
@@ -371,8 +384,8 @@ function drawMap() {
       .attr("id", function(d,i) { return d.id; })
       //.attr("title", function(d,i) { return d.properties.name; })
       .style("fill", function(d,i) { 
-        if(d.properties.value !== undefined){
-          return color(d.properties.value);         
+        if(d.properties.datavalue !== undefined){
+          return color(d.properties.datavalue);         
         } else {
           console.log(d);
         }
@@ -380,7 +393,7 @@ function drawMap() {
       .style("stroke", "#111")
       .on("mousemove", function(d,i) {
         var mouse = d3.mouse(svg.node()).map( function(d) { return parseInt(d); } );
-        var value = ': <span style="color:blue;"><b>'+prettyNum(parseFloat(d.properties.value))+'</b></span>';
+        var value = ': '+boldBlue(prettyNum(parseFloat(d.properties.datavalue)));
 
         tooltip.classed("hidden", false)
           .attr("style", "left:"+(mouse[0]+offsetL)+"px;top:"+(mouse[1]+offsetT)+"px")
@@ -407,10 +420,12 @@ function drawMap() {
       }
       var average_value = (low_value + high_value) / 2.0;
 
-      var label = prettyNum(low_value) + "-" + prettyNum(high_value);
+      var label = boldBlue(prettyNum(low_value)) + " &ndash; " + boldBlue(prettyNum(high_value));
       legend += '<div class="box" style="background:'+color(average_value)+';"></div><label>'+label+'</label>';
     });
 
+
+    // create the div about other countries
     var otherCountries = '<h2>Other Regions</h2>';
 
     var otherLabels = ["Other South Asia", "Other South America", "Other East Asia", "Other Oceania", "Other Europe", "Other North & Central Amer., Caribbean", "Unknown/Other", "Other Africa", "Other Middle East/Central Asia"];
@@ -422,7 +437,7 @@ function drawMap() {
       if ($.inArray(country.Country, otherLabels) != -1) {
         var value = parseFloat(country[FIELD]);
         var label = country.Country;
-        otherCountries += '<div class="box" style="background:'+color(value)+';"></div><label>'+label+': '+prettyNum(value)+'</label>'; 
+        otherCountries += '<div class="box" style="background:'+color(value)+';"></div><label>'+label+': '+boldBlue(prettyNum(value))+'</label>'; 
       }
     });
 
@@ -439,8 +454,8 @@ function drawMap() {
         theadtr.append("th").text("Value");
 
     topo.forEach(function(c){
-      if(c.properties.value !== undefined){
-        tbody.append("tr").html('<td>'+c.properties.name+'</td><td>'+prettyNum(parseFloat(c.properties.value))+'</td>')
+      if(c.properties.datavalue !== undefined){
+        tbody.append("tr").html('<td>'+c.properties.name+'</td><td>'+prettyNum(parseFloat(c.properties.datavalue))+'</td>')
       }
     });
   }
