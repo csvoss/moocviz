@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <link rel="stylesheet" href="src/slick.grid.css" type="text/css"/>
+  <link rel="stylesheet" href="src/css/smoothness/jquery-ui-1.8.16.custom.css" type="text/css"/>
+  <link rel="stylesheet" href="src/examples/examples.css" type="text/css"/>
+</head>
+<style>
+
+svg {
+  font: 10px sans-serif;
+}
+
+.background path {
+  fill: none;
+  stroke: #ddd;
+  shape-rendering: crispEdges;
+}
+
+.foreground path {
+  fill: none;
+  stroke: #f76028;
+  stroke-width: 2px;
+
+}
+  
+.foreground path:hover{
+  visibility: visible;
+}
+
+.brush .extent {
+  fill-opacity: .3;
+  stroke: #fff;
+  shape-rendering: crispEdges;
+}
+
+.axis line,
+.axis path {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.axis text {
+  text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
+}
+
+.grid{
+  overflow: hidden;
+}
+  
+.slick-row:hover{
+  background: #fafaaa;
+}
+
+</style>
+<body>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+  
+<script src="src/lib/jquery-1.7.min.js"></script>
+<script src="src/lib/jquery.event.drag-2.2.js"></script>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="src/slick.dataview.js"></script>
+<script src="src/slick.core.js"></script>
+<script src="src/slick.grid.js"></script>
+  <div id="nav">
+    <label class="choiceLabel"> Please choose course or country </label>
+	  <select id="type" onchange="changeOptions()">
+		<option selected="selected" value="course"> course </option>
+		<option value="country"> country </option>
+	  </select>
+	  <select class="choice" id="file" onchange="render()">
+	  </select>
+  </div>
+  <div id="parCoord"></div>
+  <div id="grid" style="width:750px;height:200px;"></div>
+<script>
+	
+var inputType;
+var firstCol;
+var margin = {top: 30, right: 10, bottom: 10, left: 30},
+    width = 740 - margin.left - margin.right,
+    height = 300 - margin.top - margin.bottom;
+
+var x = d3.scale.ordinal().rangePoints([0, width], 1),
+    y = {};
+
+var line = d3.svg.line(),
+    axis = d3.svg.axis().orient("left"),
+    background,
+    foreground;
+  
+var svg = d3.select("#parCoord").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+var dataView = new Slick.Data.DataView();
+	
+	
+function changeOptions(){
+	var val = d3.select("#type")[0][0].value;
+	if (val == "country"){
+		inputType = 'files/summed_by_course/';
+		firstCol = "Course";
+		$("#file").html("<option selected='selected'>Australia</option><option>Bangladesh</option><option>Brazil</option><option>Canada</option><option>China</option><option>Colombia</option><option>Egypt</option><option>France</option><option>Germany</option><option>Greece</option><option>India</option><option>Indonesia</option><option>Japan</option>		  <option>Mexico</option><option>Morocco</option><option>Nigeria</option><option>Other_Africa</option><option>Other_East_Asia</option><option>Other_Europe</option><option>Other_Middle_East_Central_Asia</option><option>Other_North___Central_Amer.,_Caribbean</option><option>Other_Oceania</option><option>Other_South_America</option><option>Other_South_Asia</option><option>Pakistan</option><option>Philippines</option><option>Poland</option><option>Portugal</option><option>Russian_Federation</option><option>Spain</option><option>Ukraine</option><option>United_Kingdom</option><option>United_States</option><option>Unknown_Other</option>");
+	}else{
+		inputType = 'files/summed_by_country/';
+		firstCol = "Country";
+		$("#file").html(" <option selected='selected'>HarvardX_CB22x_2013_Spring</option><option>HarvardX_CS50x_2012</option><option>HarvardX_ER22x_2013_Spring</option><option>HarvardX_PH207x_2012_Fall</option><option>HarvardX_PH278x_2013_Spring</option><option>MITx_14.73x_2013_Spring</option><option>MITx_2.01x_2013_Spring</option><option>MITx_3.091x_2012_Fall</option><option>MITx_3.091x_2013_Spring</option><option>MITx_6.002x_2012_Fall</option><option>MITx_6.002x_2013_Spring</option><option>MITx_6.00x_2012_Fall</option><option>MITx_6.00x_2013_Spring</option><option>MITx_7.00x_2013_Spring</option><option>MITx_8.02x_2013_Spring</option><option>MITx_8.MReV_2013_Summer</option>");
+	}
+	render();
+}
+
+//setting defualt options when page is initialized
+changeOptions();
+
+function render() {
+	//clear parallel coord
+	svg.html("");
+	//getting input file
+	var inputFile = inputType + d3.select("#file")[0][0].value + '.csv';
+	console.log(inputFile);
+	d3.csv(inputFile, function(error, inputData) {
+  console.log(inputData);
+		// Extract the list of dimensions and create a scale for each.
+		x.domain(dimensions = d3.keys(inputData[0]).filter(function(d) {
+			return d != firstCol && (y[d] = d3.scale.linear()
+									 .domain(d3.extent(inputData, function(p) { return +p[d]; }))
+									 .range([height, 0]));
+	  }));
+		
+		// Add grey background lines for context.
+		background = svg.append("g")
+		.attr("class", "background")
+		.selectAll("path")
+		.data(inputData)
+		.enter().append("path")
+		.attr("d", path);
+		
+		// Add blue foreground lines for focus.
+		foreground = svg.append("svg:g")
+		.attr("class", "foreground")
+		.selectAll("path")
+		.data(inputData)
+		.enter()
+		.append("path")
+		.attr("id",  function(d, i) {console.log(i,  d[firstCol].replace(/[^a-z]+/gi, "-"),"ok");return d[firstCol].replace(/[^a-z]+/gi, "-");})
+		.attr("d", path)
+		.attr("visibility", "hidden");
+		
+		// Add a group element for each dimension.
+		var g = svg.selectAll(".dimension")  
+		.data(dimensions)
+		.enter().append("g")
+		.attr("class", "dimension")
+		.attr("transform", function(d) { return "translate(" + x(d) + ")"; });
+		// Add an axis and title.
+		g.append("g")
+		.attr("class", "axis")
+		.each(function(d) { d3.select(this).call(axis.scale(y[d])); })
+		.append("text")
+		  .style("text-anchor", "middle")
+		  .attr("y", -9)
+		  .text(function(d) { return d; });
+		
+		// Add and store a brush for each axis
+		g.append("g")
+		  .attr("class", "brush")
+		  .each(function(d) { d3.select(this).call(y[d].brush = d3.svg.brush().y(y[d]).on("brush", brush)); })
+		.selectAll("rect")
+		  .attr("x", -8)
+		  .attr("width", 16);
+		
+		//++++++ Slicky grid
+		var columns =[];
+		var options = {
+			enableCellNavigation: true,
+			enableColumnReorder: false,
+			multiColumnSort: true
+		}
+		
+		for (var i = 0; i < d3.keys(inputData[0]).length; i++) {
+			columns[i]= {id: d3.keys(inputData[0])[i],
+						 name:d3.keys(inputData[0])[i], 
+						 field: d3.keys(inputData[0])[i],
+						 sortable:true}
+		}
+		
+		var data = [];
+		for (i=0; i<inputData.length;i++){
+			var id = i;
+			inputData[i]["id"]= i;
+		}
+		dataView.setItems(inputData);
+		grid = new Slick.Grid("#grid", dataView, columns, options);
+		grid.onSort.subscribe(function (e, args) {
+			var cols = args.sortCols;
+			dataView.sort(function (dataRow1, dataRow2) {
+				for (var i = 0, l = cols.length; i < l; i++) {
+					var field = cols[i].sortCol.field;
+					var sign = cols[i].sortAsc ? 1 : -1;
+					var value1 = dataRow1[field], value2=dataRow2[field];
+					var result = (value1 == value2 ? 0 : (value1 > value2 ? 1 : -1)) * sign;
+					if (result != 0) {
+						return result;
+					}
+				}
+				return 0;
+			});
+			grid.invalidate();
+			grid.render();
+		});
+		
+		
+		//resizing column width
+		var cols = grid.getColumns();
+		cols[0].width = 125;
+		for (var i = 1; i < d3.keys(inputData[0]).length-1; i++){
+			console.log(d3.keys(inputData[0]).length);
+			cols[i].width = 61;
+		}
+		grid.setColumns(cols);
+		//Making Parallel coord responsive to Slicky grid 
+		grid.onMouseEnter.subscribe(function (e, args) {
+			foreground.attr("visibility", "hidden");
+			var cell = grid.getCellFromEvent(e);
+			var currentId = dataView.getItem(cell.row)[firstCol].replace(/[^a-z]+/gi, "-");
+			$("#"+currentId).attr("visibility", "visible");
+		});
+	});
+}
+	
+	// Returns the path for a given data point.
+	function path(d) {
+		return line(dimensions.map(function(p) { return [x(p), y[p](d[p])]; }));
+}
+	// Handles a brush event, toggling the display of foreground lines.
+	function brush() {
+		var actives = dimensions.filter(function(p) { return !y[p].brush.empty(); }),extents = actives.map(function(p) { return y[p].brush.extent(); });
+		foreground.style("display", function(d) {
+			return actives.every(function(p, i) {
+				return extents[i][0] <= d[p] && d[p] <= extents[i][1];
+			}) ? null : "none";
+		});
+	}
+</script>
