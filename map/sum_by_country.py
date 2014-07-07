@@ -1,5 +1,5 @@
 ## Takes in the raw Harvardx/MITx data
-## Outputs a CSV file counting the number of students that started their course on day Date
+## Outputs a CSV file aggregating the data by country
 
 import csv
 

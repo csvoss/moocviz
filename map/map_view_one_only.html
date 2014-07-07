@@ -2,126 +2,96 @@
 <head>
 <meta charset="utf-8">
 <title>World Map</title>
+
 <style>
-body {
-  font:"Palatino Linotype", serif;
-}
-
-select, option {
-  font-size: 13pt;
-  font:"Palatino Linotype", serif;
-}
-
-#top{
-  float:left;  
-  margin:0 0 10px 5%;
-  width:50%;
-}
-
-#map {
-  float:left;
-  min-width: 800px;
-}
-
-#key, #other, #info {
-  float:left;
-  margin-top: 10px;
-  padding:10px;
-  border: 2px solid #ccc;
-  clear:left;
-  width:280px;
-}
-#rightbar {
-  float:right;
-  background: #fff;
-  width:320px;
-  margin-bottom:20px;
-}
-#rightbar div.box {
-  clear:both;
-  margin-right:10px;
-  width:15px;
-  height:15px;
-  float:left;
-  border: 1px solid #999;
-}
-#rightbar label {
-  width: 250px;
-  float:left;
-}
-
-#key label {
-  font-size: 10pt;
-}
-
-h2 {
-  font-size: 120%;
-  margin:0px;
-  clear: both;
-  margin-bottom:10px;
-}
-
-#container {
-  margin:10px;
-  padding:10px;
-  padding-right:0px;
-  clear:both;
-  min-width:800px;
-}
-
-.country {
-  fill:#DCDCDC;
-}
-
-.hidden { 
-  display: none; 
-}
-div.tooltip {
-  color: #222; 
-  background: #fff; 
-  padding: 4px; 
-  text-shadow: #f5f5f5 0 1px 0;
-  border-radius: 4px; 
-  box-shadow: 0px 0px 2px 0px #a6a6a6; 
-  opacity: 0.9; 
-  position: absolute;
-}
-
-.fill {
-  fill: #fff;
-}
-.graticule {
-  fill: none;
-  stroke: #777;
-  stroke-width: .5px;
-  stroke-opacity: .5;
-}
-
-
+  body {
+    font:"Palatino Linotype", serif;
+  }
+  select, option {
+    font-size: 13pt;
+    font:"Palatino Linotype", serif;
+  }
+  #top{
+    float:left;  
+    width:50%;
+  }
+  #map {
+    float:left;
+    min-width: 600px;
+  }
+  #key, #other, #info {
+    float:left;
+    padding:10px;
+    border: 2px solid #ccc;
+    clear:left;
+    width:230px;
+    margin-bottom:10px;
+  }
+  #rightbar {
+    float:right;
+    background: #fff;
+    width:270px;
+  }
+  #rightbar div.box {
+    clear:both;
+    margin-right:10px;
+    width:15px;
+    height:15px;
+    float:left;
+    border: 1px solid #999;
+  }
+  #rightbar label {
+    width: 200px;
+    float:left;
+  }
+  #key label {
+    font-size: 10pt;
+  }
+  h2 {
+    font-size: 120%;
+    margin:0px;
+    clear: both;
+    margin-bottom:10px;
+  }
+  #container {
+    overflow:scroll;
+    max-height:500px;
+    margin:10px;
+    padding:10px;
+    padding-right:0px;
+    clear:both;
+    min-width:600px;
+  }
+  .country {
+    fill:#DCDCDC;
+  }
+  .hidden { 
+    display: none; 
+  }
+  div.tooltip {
+    color: #222; 
+    background: #fff; 
+    padding: 4px; 
+    text-shadow: #f5f5f5 0 1px 0;
+    border-radius: 4px; 
+    box-shadow: 0px 0px 2px 0px #a6a6a6; 
+    opacity: 0.9; 
+    position: absolute;
+  }
+  .fill {
+    fill: #fff;
+  }
+  .graticule {
+    fill: none;
+    stroke: #777;
+    stroke-width: .5px;
+    stroke-opacity: .5;
+  }
 </style>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 </head>
 <body>
   <div id="container">
-  <select class="form-control" id="whichinputfile" onchange="refresh()">
-    <option>All Courses</option>
-    <option>HarvardX CB22x, 2013 Spring</option>
-    <option>HarvardX CS50x, 2012</option>
-    <option>HarvardX ER22x, 2013 Spring</option>
-    <option>HarvardX PH207x, 2012 Fall</option>
-    <option>HarvardX PH278x, 2013 Spring</option>
-    <option>MITx 14.73x, 2013 Spring</option>
-    <option>MITx 2.01x, 2013 Spring</option>
-    <option>MITx 3.091x, 2012 Fall</option>
-    <option>MITx 3.091x, 2013 Spring</option>
-    <option>MITx 6.002x, 2012 Fall</option>
-    <option>MITx 6.002x, 2013 Spring</option>
-    <option>MITx 6.00x, 2012 Fall</option>
-    <option>MITx 6.00x, 2013 Spring</option>
-    <option>MITx 7.00x, 2013 Spring</option>
-    <option>MITx 8.02x, 2013 Spring</option>
-    <option>MITx 8.MReV, 2013 Summer</option>
-  </select>
   <select class="form-control" id="whichdatafield" onchange="refresh()">
     <option>Number of students that registered for the course</option>
     <option>Number of students that viewed the course</option>
@@ -151,9 +121,9 @@ div.tooltip {
       <div id="info"></div>
     </div>
   </div>
-  <script src="js/d3.min.js"></script>
-<script src="js/topojson.v1.min.js"></script>
-<script src="js/d3.geo.projection.v0.min.js"></script>
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://d3js.org/topojson.v1.min.js"></script>
+<script src="http://d3js.org/d3.geo.projection.v0.min.js"></script>
 
 <script>
 
@@ -162,26 +132,6 @@ var INPUTFILE;
 var LOGSCALED;
 
 var LOGBASE = 10;
-
-var INPUT_FILE_NAMES = {
-  "All Courses": "summed_by_country/HMXPC13_DI_v2_5-14-14.csv",
-  "HarvardX CB22x, 2013 Spring": "summed_by_country/HarvardX_CB22x_2013_Spring.csv",
-  "HarvardX CS50x, 2012": "summed_by_country/HarvardX_CS50x_2012.csv",
-  "HarvardX ER22x, 2013 Spring": "summed_by_country/HarvardX_ER22x_2013_Spring.csv",
-  "HarvardX PH207x, 2012 Fall": "summed_by_country/HarvardX_PH207x_2012_Fall.csv",
-  "HarvardX PH278x, 2013 Spring": "summed_by_country/HarvardX_PH278x_2013_Spring.csv",
-  "MITx 14.73x, 2013 Spring": "summed_by_country/MITx_14.73x_2013_Spring.csv",
-  "MITx 2.01x, 2013 Spring": "summed_by_country/MITx_2.01x_2013_Spring.csv",
-  "MITx 3.091x, 2012 Fall": "summed_by_country/MITx_3.091x_2012_Fall.csv",
-  "MITx 3.091x, 2013 Spring": "summed_by_country/MITx_3.091x_2013_Spring.csv",
-  "MITx 6.002x, 2012 Fall": "summed_by_country/MITx_6.002x_2012_Fall.csv",
-  "MITx 6.002x, 2013 Spring": "summed_by_country/MITx_6.002x_2013_Spring.csv",
-  "MITx 6.00x, 2012 Fall": "summed_by_country/MITx_6.00x_2012_Fall.csv",
-  "MITx 6.00x, 2013 Spring": "summed_by_country/MITx_6.00x_2013_Spring.csv",
-  "MITx 7.00x, 2013 Spring": "summed_by_country/MITx_7.00x_2013_Spring.csv",
-  "MITx 8.02x, 2013 Spring": "summed_by_country/MITx_8.02x_2013_Spring.csv",
-  "MITx 8.MReV, 2013 Summer": "summed_by_country/MITx_8.MReV_2013_Summer.csv",
-};
 
 var DATA_FIELD_NAMES = {
   "Number of students that registered for the course": "registered",
@@ -227,7 +177,7 @@ function toggleScale(logarithmicOn) {
 
 function refresh() {
   FIELD = DATA_FIELD_NAMES[d3.select("#whichdatafield")[0][0].value];
-  INPUTFILE = INPUT_FILE_NAMES[d3.select("#whichinputfile")[0][0].value];
+  INPUTFILE = 'http://128.52.161.241:3000/system/offerings/public_data/5/MITx_6.002x_2012_Fall.csv'
   LOGSCALED = $('#scaleLogarithmic').prop('checked');
   redraw();
 }
@@ -255,7 +205,7 @@ var tooltip = d3.select("body").append("div").attr("class", "tooltip hidden");
 setupMap();
 
 function setupMap() {
-  var width = Math.max(document.getElementById('container').offsetWidth - 370, 800);  // subtract px for the legend
+  var width = Math.max(document.getElementById('container').offsetWidth - 320, 600);  // subtract px for the legend
   $("#map").css('width',width);
   var height = width / 2;
   projection = d3.geo.hammer().translate([0, 0]).scale(width / 2 / Math.PI);
@@ -350,7 +300,7 @@ function countriesEqual(country_name, smaller_name) {
 
 function drawMap() {
   queue()
-      .defer(d3.json, "data/world-110m-cia.json")
+      .defer(d3.json, "http://128.52.161.241:3000/system/visualizations/data_extraction_scripts/5/world-110m-cia.json")
       .defer(d3.csv, INPUTFILE)
       .await(ready);
 
