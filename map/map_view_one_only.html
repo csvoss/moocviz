@@ -43,8 +43,6 @@
   #rightbar label {
     width: 200px;
     float:left;
-  }
-  #key label {
     font-size: 10pt;
   }
   h2 {
@@ -429,7 +427,6 @@ function drawMap() {
     });
 
     var empty = true;
-
     var title = '<h2>'+d3.select("#whichdatafield")[0][0].value+'</h2>';
     var spacer = '<h2>&nbsp;</h2>';
     var countriesLabels = '';
@@ -456,7 +453,6 @@ function drawMap() {
     });
 
     if (empty) {
-      //tbody.append("tr").html('No data.');
       $("#key").html('<h2>Legend</h2>No data.');
       $("#info").html(title + 'No data.');
     } else{
