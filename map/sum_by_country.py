@@ -1,5 +1,5 @@
 ## Takes in the raw Harvardx/MITx data
-## Outputs a CSV file aggregating the data by country
+## Outputs a CSV file aggregating the data by country, for the MAP visualization
 
 import csv
 
@@ -33,7 +33,6 @@ FIELDS_AVG = [fi+'_avg' for fi in FIELDS]
 
 COUNTRY = 'final_cc_cname_DI'
 
-
 for inputfilename in INPUTFILENAMES:
     with open(inputfilename, 'rb') as csv_in:
         csvreader = csv.DictReader(csv_in, delimiter=DELIMITER, quotechar=QUOTECHAR)
@@ -58,8 +57,6 @@ for inputfilename in INPUTFILENAMES:
                     num = float(num)
                     sums_by_fi[fi] += num
                     counts_by_fi[fi] += 1
-            #print country, sums_by_fi, counts_by_fi
-
 
         ## Prevent divide by zero errors when computing average
         for c in counts_by_fi_by_c:
@@ -68,13 +65,10 @@ for inputfilename in INPUTFILENAMES:
                 if counts_by_fi[fi] == 0:
                     counts_by_fi[fi] = 1
 
-        ## Compute average
+        ## Compute average from sums and counts
         averages_by_fi_by_c = dict([ (country, dict([(field, sums_by_fi_by_c[country][field] / counts_by_fi_by_c[country][field]) for field in FIELDS])) for country in sums_by_fi_by_c])
 
         outputfilename = OUTPUTFOLDER + '/' + inputfilename.split('/')[-1]
-
-        #print sums_by_fi_by_c
-        #print counts_by_fi_by_c
 
         with open(outputfilename, 'wb') as csv_out:
             csvwriter = csv.writer(csv_out, delimiter=DELIMITER, quotechar=QUOTECHAR, quoting=csv.QUOTE_MINIMAL)

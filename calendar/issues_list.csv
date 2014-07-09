@@ -1,0 +1,10 @@
+feature,Weekday labels
+feature,Show population of course each day
+feature,Show official start and end date of course
+feature,Month labels
+feature,Color intensity legend
+feature,Make dropdown more human readable
+feature,Make mouseover text more human readable
+feature,Change colors from red/green/blue to something colorblind-friendly
+feature,Make mouseover text more instantaneous
+feature,Make dropdown prettier -- maybe as a Venn diagram of colors mixing?
