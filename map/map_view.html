@@ -1,49 +1,50 @@
 <!DOCTYPE html>
+
+<!-- Based on http://techslides.com/demos/d3/d3-world-population-density.html -->
+
 <head>
 <meta charset="utf-8">
 <title>World Map</title>
 <style>
 body {
-  font:"Palatino Linotype", serif;
+  font: "Palatino Linotype", serif;
 }
 select, option {
   font-size: 13pt;
-  font:"Palatino Linotype", serif;
-}
-#top{
-  float:left;  
-  margin:0 0 10px 5%;
-  width:50%;
+  font: "Palatino Linotype", serif;
 }
 #map {
-  float:left;
-  min-width: 800px;
+  float: left;
+  min-width: 600px;
+  max-height: 450px;
+  overflow-y: scrollable;
 }
-#key, #other, #info {
-  float:left;
-  margin-top: 10px;
-  padding:10px;
+#key, #info {
+  float: left;
+  padding: 10px;
   border: 2px solid #ccc;
-  clear:left;
-  width:280px;
+  clear: left;
+  width: 230px;
+  margin-bottom: 10px;
 }
 #rightbar {
-  float:right;
+  float: right;
   background: #fff;
-  width:320px;
-  margin-bottom:20px;
+  width: 280px;
+  max-height: 450px;
+  overflow-y: scroll;
 }
 #rightbar div.box {
-  clear:both;
-  margin-right:10px;
-  width:15px;
-  height:15px;
-  float:left;
+  clear: both;
+  margin-right: 10px;
+  width: 15px;
+  height: 15px;
+  float: left;
   border: 1px solid #999;
 }
 #rightbar label {
-  width: 250px;
-  float:left;
+  width: 200px;
+  float: left;
   font-size: 10pt;
 }
 h2 {
@@ -53,11 +54,9 @@ h2 {
   margin-bottom:10px;
 }
 #container {
-  margin:10px;
-  padding:10px;
-  padding-right:0px;
-  clear:both;
-  min-width:800px;
+  max-height: 500px;
+  min-width: 600px;
+  clear: both;
 }
 .country {
   fill:#DCDCDC;
@@ -91,67 +90,31 @@ span.help:hover {
   cursor: help;
   color: #44F;
 }
-
 </style>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 </head>
+
 <body>
   <div id="container">
-  <select class="form-control" id="whichinputfile" onchange="refresh()" onkeyup="refresh()">
-    <option>All Courses</option>
-    <option>HarvardX CB22x, Spring 2013</option>
-    <option>HarvardX CS50x, 2012</option>
-    <option>HarvardX ER22x, Spring 2013</option>
-    <option>HarvardX PH207x, Fall 2012</option>
-    <option>HarvardX PH278x, Spring 2013</option>
-    <option>MITx 14.73x, Spring 2013</option>
-    <option>MITx 2.01x, Spring 2013</option>
-    <option>MITx 3.091x, Fall 2012</option>
-    <option>MITx 3.091x, Spring 2013</option>
-    <option>MITx 6.002x, Fall 2012</option>
-    <option>MITx 6.002x, Spring 2013</option>
-    <option>MITx 6.00x, Fall 2012</option>
-    <option>MITx 6.00x, Spring 2013</option>
-    <option>MITx 7.00x, Spring 2013</option>
-    <option>MITx 8.02x, Spring 2013</option>
-    <option>MITx 8.MReV, Summer 2013</option>
-  </select>
-  <select class="form-control" id="whichdatafield" onchange="refresh()" onkeyup="refresh()">
-    <option>Number of students that registered for the course</option>
-    <option>Number of students that viewed the course</option>
-    <option>Number of students that explored the course content</option>
-    <option>Number of students that were certified</option>
-    <option>Total number of events</option>
-    <option>Total number of days active</option>
-    <option>Total number of video plays</option>
-    <option>Total number of chapters accessed</option>
-    <option>Total number of forum posts</option>
-    <option>Probability of viewing the course (0.0-1.0)</option>
-    <option>Probability of exploring the course content (0.0-1.0)</option>
-    <option>Probability of becoming certified (0.0-1.0)</option>
-    <option>Average grade (0.0-1.0)</option>
-    <option>Average number of events</option>
-    <option>Average number of days active</option>
-    <option>Average number of video plays</option>
-    <option>Average number of chapters accessed</option>
-    <option>Average number of forum posts</option>
-  </select>
-  Scale: 
-  <input type="radio" id="scaleLinear" onchange="toggleScale(false)">
-    Linear <span title="True color scale." class="help"><sup>[?]</sup></span>
-  </input>
-  <input type="radio" id="scaleLogarithmic" onchange="toggleScale(true)">
-    Logarithmic <span title="Modified color scale: smaller values are easier to see, larger values are less overpowering." class="help"><sup>[?]</sup></span>
-  </input>
-    <div id="map"></div>
+    <select class="form-control" id="whichinputfile" onchange="refresh()" onkeyup="refresh()">
+    </select>
+    <select class="form-control" id="whichdatafield" onchange="refresh()" onkeyup="refresh()">
+    </select>
+    Scale: 
+    <input type="radio" id="scaleLinear" onchange="toggleScale(false)">
+      Linear <span title="True color scale." class="help"><sup>[?]</sup></span>
+    </input>
+    <input type="radio" id="scaleLogarithmic" onchange="toggleScale(true)">
+      Logarithmic <span title="Modified color scale: smaller values are easier to see, larger values are less overpowering." class="help"><sup>[?]</sup></span>
+    </input>
     <div id="rightbar">
-      <!--<div id="key"></div>-->
       <div id="info"></div>
     </div>
+    <div id="map"></div>
   </div>
-  <script src="js/d3.min.js"></script>
-<script src="js/topojson.v1.min.js"></script>
-<script src="js/d3.geo.projection.v0.min.js"></script>
+<script src="http://128.52.161.241:3000/system/visualizations/chelsea-iveel/moocviz/map/js/d3.min.js"></script>
+<script src="http://128.52.161.241:3000/system/visualizations/chelsea-iveel/moocviz/map/js/topojson.v1.min.js"></script>
+<script src="http://128.52.161.241:3000/system/visualizations/chelsea-iveel/moocviz/map/js/d3.geo.projection.v0.min.js"></script>
 
 <script>
 
@@ -202,19 +165,40 @@ var DATA_FIELD_NAMES = {
   "Average number of forum posts": "nforum_posts_avg",
 };
 
-var OTHER_REGIONS = { "Other Europe": ["United Kingdom", "Spain", "Germany", "Poland", "Greece", "Ukraine", "France", "Portugal", "Albania", "Austria", "Romania", "Norway", "Serbia", "Netherlands", "Croatia", "Slovakia", "Slovenia", "Belgium", "Bulgaria", "Bosnia and Herzegovina", "Belarus", "Sweden", "Switzerland", "Ireland", "Estonia", "Iceland", "Italy", "Finland", "Denmark", "Northern Cyprus", "Hungary", "Luxembourg", "Latvia", "Moldova", "Lithuania", "Montenegro", "Kosovo", "Macedonia", "Cyprus", "Czech Republic"], "Other Africa": ["Egypt", "Botswana", "Burkina Faso", "Cote d'Ivoire", "Cameroon", "Eritrea", "The Gambia", "Guinea-Bissau", "Kenya", "Lesotho", "Liberia", "Mali", "Central African Republic", "Libya", "Guinea", "Niger", "Malawi", "Mauritania", "Namibia", "Rwanda", "Sudan", "South Africa", "Zambia", "Zimbabwe", "Somaliland", "Somalia", "South Sudan", "Tanzania", "Uganda", "Senegal", "Western Sahara", "Chad", "Mozambique", "Ghana", "Madagascar", "Tunisia", "Togo", "Sierra Leone", "Swaziland", "Gabon", "Djibouti", "Equatorial Guinea", "Democratic Republic of the Congo", "Algeria", "Republic of the Congo", "Ethiopia", "Burundi", "Benin", "Nigeria", "Angola", "Morocco"], "Other Middle East/Central Asia": ["Armenia", "Georgia", "Azerbaijan", "Kazakhstan", "United Arab Emirates", "Russia", "Pakistan", "Jordan", "Israel", "Lebanon", "Iran", "Iraq", "Palestine", "Syria", "Yemen", "Uzbekistan", "Kyrgyzstan", "Tajikistan", "Turkmenistan", "Turkey", "Kuwait", "Oman", "Qatar", "Saudi Arabia", "Afghanistan"], "Other South Asia": ["Sri Lanka", "Bhutan", "Nepal", "Bangladesh", "Cambodia", "Laos", "Burma", "Thailand", "India"], "Other South America": ["Argentina", "Ecuador", "Chile", "Venezuela", "Paraguay", "Suriname", "Uruguay", "Peru", "Falkland Islands", "Guyana", "Brazil", "Bolivia", "Colombia"], "Other East Asia": ["China", "Vietnam", "Mongolia", "Japan", "North Korea", "South Korea", "Taiwan"], "Other North & Central Amer., Caribbean": ["United States", "Canada", "Haiti", "Guatemala", "Cuba", "Jamaica", "Honduras", "Dominican Republic", "Bahamas", "Belize", "Mexico", "El Salvador", "Nicaragua", "Costa Rica", "Trinidad and Tobago", "Panama", "Puerto Rico"], "Unknown/Other": ["Greenland", "Antarctica", "French Southern and Antarctic Lands"], "Other Oceania": ["Fiji", "Malaysia", "New Caledonia", "Philippines", "Solomon Islands", "New Zealand", "Papua New Guinea", "Brunei", "Australia", "Timor-Leste", "Vanuatu", "Indonesia"]}
+var CONTINENTS = {
+  "Other Europe": ["United Kingdom", "Spain", "Germany", "Poland", "Greece", "Ukraine", "France", "Portugal", "Albania", "Austria", "Romania", "Norway", "Serbia", "Netherlands", "Croatia", "Slovakia", "Slovenia", "Belgium", "Bulgaria", "Bosnia and Herzegovina", "Belarus", "Sweden", "Switzerland", "Ireland", "Estonia", "Iceland", "Italy", "Finland", "Denmark", "Northern Cyprus", "Hungary", "Luxembourg", "Latvia", "Moldova", "Lithuania", "Montenegro", "Kosovo", "Macedonia", "Cyprus", "Czech Republic"],
+  "Other Africa": ["Egypt", "Botswana", "Burkina Faso", "Cote d'Ivoire", "Cameroon", "Eritrea", "The Gambia", "Guinea-Bissau", "Kenya", "Lesotho", "Liberia", "Mali", "Central African Republic", "Libya", "Guinea", "Niger", "Malawi", "Mauritania", "Namibia", "Rwanda", "Sudan", "South Africa", "Zambia", "Zimbabwe", "Somaliland", "Somalia", "South Sudan", "Tanzania", "Uganda", "Senegal", "Western Sahara", "Chad", "Mozambique", "Ghana", "Madagascar", "Tunisia", "Togo", "Sierra Leone", "Swaziland", "Gabon", "Djibouti", "Equatorial Guinea", "Democratic Republic of the Congo", "Algeria", "Republic of the Congo", "Ethiopia", "Burundi", "Benin", "Nigeria", "Angola", "Morocco"],
+  "Other Middle East/Central Asia": ["Armenia", "Georgia", "Azerbaijan", "Kazakhstan", "United Arab Emirates", "Russia", "Pakistan", "Jordan", "Israel", "Lebanon", "Iran", "Iraq", "Palestine", "Syria", "Yemen", "Uzbekistan", "Kyrgyzstan", "Tajikistan", "Turkmenistan", "Turkey", "Kuwait", "Oman", "Qatar", "Saudi Arabia", "Afghanistan"],
+  "Other South Asia": ["Sri Lanka", "Bhutan", "Nepal", "Bangladesh", "Cambodia", "Laos", "Burma", "Thailand", "India"],
+  "Other South America": ["Argentina", "Ecuador", "Chile", "Venezuela", "Paraguay", "Suriname", "Uruguay", "Peru", "Falkland Islands", "Guyana", "Brazil", "Bolivia", "Colombia"],
+  "Other East Asia": ["China", "Vietnam", "Mongolia", "Japan", "North Korea", "South Korea", "Taiwan"],
+  "Other North & Central Amer., Caribbean": ["United States", "Canada", "Haiti", "Guatemala", "Cuba", "Jamaica", "Honduras", "Dominican Republic", "Bahamas", "Belize", "Mexico", "El Salvador", "Nicaragua", "Costa Rica", "Trinidad and Tobago", "Panama", "Puerto Rico"],
+  "Unknown/Other": ["Greenland", "Antarctica", "French Southern and Antarctic Lands"],
+  "Other Oceania": ["Fiji", "Malaysia", "New Caledonia", "Philippines", "Solomon Islands", "New Zealand", "Papua New Guinea", "Brunei", "Australia", "Timor-Leste", "Vanuatu", "Indonesia"]}
 
-var OTHER_LABELS = ["Other South Asia", "Other South America", "Other East Asia", "Other Oceania", "Other Europe", "Other North & Central Amer., Caribbean", "Unknown/Other", "Other Africa", "Other Middle East/Central Asia"];
+var CONTINENT_NAMES = [];
+for (var key in CONTINENTS) {
+  CONTINENT_NAMES.push(key);
+}
+for (var key in DATA_FIELD_NAMES) {
+  $("#whichdatafield").append(new Option(key,key));
+}
+for (var key in INPUT_FILE_NAMES) {
+  $("#whichinputfile").append(new Option(key,key));
+}
 
-var OTHER_DATA = {};
+var CONTINENT_DATA = {};
 
-var COUNTRY_TO_OTHER = {};
-OTHER_LABELS.forEach(function(otherLabel, i) {
-  var countrylist = OTHER_REGIONS[otherLabel];
-  countrylist.forEach(function(country, i) {
-    COUNTRY_TO_OTHER[country] = otherLabel;
+var COUNTRY_TO_CONTINENT = {};
+CONTINENT_NAMES.forEach(function(continent_name, i) {
+  var country_list = CONTINENTS[continent_name];
+  country_list.forEach(function(country_name, i) {
+    COUNTRY_TO_CONTINENT[country_name] = continent_name;
   });
 });
+
+//STATIC_HOST = "http://128.52.161.241:3000/system/visualizations/chelsea-iveel/moocviz/";
+STATIC_HOST='../';
 
 function toggleScale(logarithmicOn) {
   $('#scaleLogarithmic').prop('checked', logarithmicOn);
@@ -224,7 +208,7 @@ function toggleScale(logarithmicOn) {
 
 function refresh() {
   FIELD = DATA_FIELD_NAMES[d3.select("#whichdatafield")[0][0].value];
-  INPUTFILE = INPUT_FILE_NAMES[d3.select("#whichinputfile")[0][0].value];
+  INPUTFILE = STATIC_HOST + 'map/' + INPUT_FILE_NAMES[d3.select("#whichinputfile")[0][0].value];
   LOGSCALED = $('#scaleLogarithmic').prop('checked');
   redraw();
 }
@@ -252,9 +236,9 @@ var tooltip = d3.select("body").append("div").attr("class", "tooltip hidden");
 setupMap();
 
 function setupMap() {
-  var width = Math.max(document.getElementById('container').offsetWidth - 370, 800);  // subtract px for the legend
-  $("#map").css('width',width);
+  var width = Math.min(1000, Math.max(document.getElementById('container').offsetWidth - 300, 600));  // subtract px for the legend
   var height = width / 2;
+  $("#map").css('width',width);
   projection = d3.geo.hammer().translate([0, 0]).scale(width / 2 / Math.PI);
   path = d3.geo.path().projection(projection);
   graticule = d3.geo.graticule();
@@ -288,6 +272,7 @@ function prettyNum(numString) {
   return addCommas(reduceSigFigs(n, 3));
 }
 
+/* From https://forums.adobe.com/thread/1386871 */
 function reduceSigFigs(n, sig) {
   // n :: float or float-string
   // sig :: int or int-string
@@ -302,6 +287,7 @@ function reduceSigFigs(n, sig) {
   return uberRound(output, 7); // get rid of silly floatingpoint precision problems
 }
 
+/* From http://stackoverflow.com/questions/5731193/how-to-format-numbers-using-javascript */
 function addCommas(numString) {
   // numString :: float-string or int-string or float or int
   // return :: string
@@ -317,6 +303,7 @@ function addCommas(numString) {
   return x1 + x2;
 }
 
+/* From http://phpjs.org/functions/round/ */
 function uberRound(value, precision) {
   var m, f, isHalf, sgn; // helper variables
   // making sure precision is integer
@@ -348,23 +335,24 @@ function countriesEqual(country_name, smaller_name) {
 
 function drawMap() {
   queue()
-      .defer(d3.json, "data/world-110m-cia.json")
+      .defer(d3.json, STATIC_HOST + "map/" + "data/world-110m-cia.json")
       .defer(d3.csv, INPUTFILE)
       .await(ready);
 
   function ready(error, world, countries) {
 
-    OTHER_LABELS.forEach(function(label, i) {
-      OTHER_DATA[label] = {};
-      OTHER_DATA[label][FIELD] = 0;
+    CONTINENT_NAMES.forEach(function(label, i) {
+      CONTINENT_DATA[label] = {};
+      CONTINENT_DATA[label][FIELD] = 0;
     })
 
     countries.forEach(function(country, i) {
-      if ($.inArray(country.Country, OTHER_LABELS) != -1) {
-        OTHER_DATA[country.Country] = country;
+      if ($.inArray(country.Country, CONTINENT_NAMES) != -1) {
+        CONTINENT_DATA[country.Country] = country;
       }
     });
 
+    // stores data for each country
     topo = topojson.feature(world, world.objects.countries).features;
 
     //update topo with data about the relevant FIELD
@@ -378,7 +366,8 @@ function drawMap() {
       }
     });
 
-    //sort the arrays in decreasing order of intensity
+    //sort the arrays in decreasing order of intensity (of color and/or numeric value)
+    //so that they print nicely in the legend
     topo.sort(function(a, b){
       if (a.properties.datavalue == undefined) a.properties.datavalue = 0;
       if (b.properties.datavalue == undefined) b.properties.datavalue = 0;
@@ -387,8 +376,8 @@ function drawMap() {
     countries.sort(function(a, b) {
       return d3.descending(parseFloat(a[FIELD]), parseFloat(b[FIELD]));
     });
-    OTHER_LABELS.sort(function(a, b) {
-      return d3.descending(parseFloat(OTHER_DATA[a][FIELD]), parseFloat(OTHER_DATA[b][FIELD]));
+    CONTINENT_NAMES.sort(function(a, b) {
+      return d3.descending(parseFloat(CONTINENT_DATA[a][FIELD]), parseFloat(CONTINENT_DATA[b][FIELD]));
     });
 
     function logB(num) {
@@ -405,11 +394,12 @@ function drawMap() {
       // A higher value of num --> a darker blue
       // (more intense colors are FARTHER from 255)
 
-      var MAX = 220;
-      if (num==0) return "rgb("+MAX+","+MAX+","+MAX+")";
-
       var R = 15, G = 30, B = 135; // a nice dark blue
-      var DELTA_R = MAX-R, DELTA_G = MAX-G, DELTA_B = MAX-B;
+      var MAXRGB = 220; // the lightest that the countries can get
+
+      if (num==0) return "rgb("+MAXRGB+","+MAXRGB+","+MAXRGB+")";
+
+      var DELTA_R = MAXRGB-R, DELTA_G = MAXRGB-G, DELTA_B = MAXRGB-B;
       var percent;
       if (LOGSCALED) {
         percent = logB(num + 1) / log_maximum;
@@ -417,9 +407,9 @@ function drawMap() {
       else {
         percent = num / maximum;
       }
-      var r = Math.round(MAX - DELTA_R*percent);
-      var g = Math.round(MAX - DELTA_G*percent);
-      var b = Math.round(MAX - DELTA_B*percent);
+      var r = Math.round(MAXRGB - DELTA_R*percent);
+      var g = Math.round(MAXRGB - DELTA_G*percent);
+      var b = Math.round(MAXRGB - DELTA_B*percent);
       return "rgb(" + r + "," + g + "," + b + ")";
     }
 
@@ -447,8 +437,9 @@ function drawMap() {
           var name = d.properties.name;
           var value = d.properties.datavalue;
         } else {
-          var name = COUNTRY_TO_OTHER[d.properties.name];
-          var c = OTHER_DATA[name];
+          var name = COUNTRY_TO_CONTINENT[d.properties.name];
+          var c = CONTINENT_DATA[name];
+          name = name+ ' (' + d.properties.name + ')';
           var value = c[FIELD];
         }
 
@@ -462,13 +453,12 @@ function drawMap() {
 
     //create a custom legend
     var legend = '';
-    var legend_percents = [0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875];
+    var legend_percents = [0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875]; // eight increments of 1/8
     legend_percents.forEach(function(percent, i) {
       var low_percent = percent;
       var high_percent = percent + 0.125;
 
       if (LOGSCALED) {
-        // percent = Math.log(num + 1) / log_maximum
         var low_value = powB(log_maximum * low_percent) - 1;
         var high_value = powB(log_maximum * high_percent) - 1;
       } else {
@@ -485,26 +475,26 @@ function drawMap() {
 
     var title = '<h2>'+d3.select("#whichdatafield")[0][0].value+'</h2>';
     var spacer = '<h2>&nbsp;</h2>';
-    var countriesLabels = '';
-    var others = '';
+    var country_labels = '';
+    var continent_labels = '';
     
     topo.forEach(function(c){
       if(c.properties.datavalue !== undefined && c.properties.datavalue > 0){
         var name = c.properties.name;
         var value = parseFloat(c.properties.datavalue);
         var label = name + ': ' + boldBlue(prettyNum(value));
-        countriesLabels += '<div class="box" style="background:'+color(value)+';"></div>';
-        countriesLabels += '<label>' + label + '</label>';
+        country_labels += '<div class="box" style="background:'+color(value)+';"></div>';
+        country_labels += '<label>' + label + '</label>';
         empty = false;
       }
     });
     
-    OTHER_LABELS.forEach(function(otherLabel, i) {
-      country = OTHER_DATA[otherLabel];
+    CONTINENT_NAMES.forEach(function(continent_name, i) {
+      country = CONTINENT_DATA[continent_name];
       var value = parseFloat(country[FIELD]);
-      var label = otherLabel;
-      others += '<div class="box" style="background:'+color(value)+';"></div>';
-      others += '<label>'+label+': '+boldBlue(prettyNum(value))+'</label>'; 
+      var label = continent_name;
+      continent_labels += '<div class="box" style="background:'+color(value)+';"></div>';
+      continent_labels += '<label>'+label+': '+boldBlue(prettyNum(value))+'</label>'; 
       empty = false;
     });
 
@@ -513,7 +503,7 @@ function drawMap() {
       $("#info").html(title + 'No data.');
     } else{
       $("#key").html(legend);
-      $("#info").html(title + countriesLabels + others);
+      $("#info").html(title + country_labels + continent_labels);
     }
   }
 }
