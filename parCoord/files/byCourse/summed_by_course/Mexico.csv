@@ -1,4 +1,4 @@
-Course,viewed,explored,certified,grade,events,active days,video play,chapters,forum posts
+Course,Viewed,Explored,Certified,Grade,Events,Active days,Video plays,Chapters,Forum posts
 MITx/3.091x/2012_Fall,0.61,0.1,0.08,0.09,1041.9,8.99,314.09,4.28,0.0
 HarvardX/ER22x/2013_Spring,0.62,0.06,0.04,0.05,160.71,4.09,0.0,5.97,0.0
 MITx/6.002x/2012_Fall,0.71,0.06,0.04,0.05,515.02,6.46,120.11,3.78,0.01
@@ -15,3 +15,4 @@ MITx/6.00x/2012_Fall,0.74,0.07,0.03,0.04,671.88,7.76,111.33,3.63,0.03
 MITx/7.00x/2013_Spring,0.63,0.07,0.03,0.04,497.23,5.17,104.66,3.55,0.0
 HarvardX/PH207x/2012_Fall,0.7,0.07,0.02,0.06,477.31,5.46,108.43,3.48,0.0
 MITx/8.02x/2013_Spring,0.71,0.05,0.02,0.03,703.71,7.19,137.02,3.71,0.08
+Overall average,0.69,0.06,0.04,0.05,509.07,6.04,107.99,3.65,0.01

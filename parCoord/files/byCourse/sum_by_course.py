@@ -3,9 +3,8 @@
 
 import csv
 
-INPUTFILENAMES = [
 
-'../Overall.csv',
+INPUTFILENAMES = [
 '../split_by_country/Unknown_Other.csv',
 '../split_by_country/United_States.csv',
 '../split_by_country/United_Kingdom.csv',
@@ -48,12 +47,13 @@ QUOTECHAR = '"'
 OUTPUTFOLDER = 'summed_by_course'
 
 FIELDS = ['viewed', 'explored', 'certified', 'grade', 'nevents', 'ndays_act', 'nplay_video', 'nchapters', 'nforum_posts']
-FIELDS_AVG = ['viewed', 'explored', 'certified', 'grade', 'events', 'active days', 'video play', 'chapters', 'forum posts']
-#[fi+'_avg' for fi in FIELDS]
+FIELDS_NAME = ['Viewed', 'Explored', 'Certified', 'Grade', 'Events', 'Active days', 'Video plays', 'Chapters', 'Forum posts']
+
 
 COURSE = 'course_id'
 
 
+    
 for inputfilename in INPUTFILENAMES:
     with open(inputfilename, 'rb') as csv_in:
         csvreader = csv.DictReader(csv_in, delimiter=DELIMITER, quotechar=QUOTECHAR)
@@ -66,6 +66,7 @@ for inputfilename in INPUTFILENAMES:
             return string != '' and string != 'NA' and len(string)>0 
 
         for row in csvreader:
+                
             course = row[COURSE]
             if not course in sums_by_fi_by_c:
                 sums_by_fi_by_c[course] = dict([(fi,0) for fi in FIELDS])
@@ -78,9 +79,7 @@ for inputfilename in INPUTFILENAMES:
                     num = float(num)
                     sums_by_fi[fi] += num
                     counts_by_fi[fi] += 1
-            #print country, sums_by_fi, counts_by_fi
-
-
+               
         ## Prevent divide by zero errors when computing average
         for c in counts_by_fi_by_c:
             counts_by_fi = counts_by_fi_by_c[c]
@@ -88,15 +87,34 @@ for inputfilename in INPUTFILENAMES:
                 if counts_by_fi[fi] == 0:
                     counts_by_fi[fi] = 1
 
-        ## Compute average
+        ## Compute average for each course
         averages_by_fi_by_c = dict([ (course, dict([(field, round(sums_by_fi_by_c[course][field] / counts_by_fi_by_c[course][field], 2)) for field in FIELDS])) for course in sums_by_fi_by_c])
-
         outputfilename = OUTPUTFOLDER + '/' + inputfilename.split('/')[-1]
-
         with open(outputfilename, 'wb') as csv_out:
             csvwriter = csv.writer(csv_out, delimiter=DELIMITER, quotechar=QUOTECHAR, quoting=csv.QUOTE_MINIMAL)
-            csvwriter.writerow(['Course'] + FIELDS_AVG)
+            csvwriter.writerow(['Course'] + FIELDS_NAME)
+            all_course_ave = {}
+            number_course = 0
+            for fi in FIELDS:
+                all_course_ave[fi] = 0;            
+            
             for course in sums_by_fi_by_c:
+                number_course +=1
+                for fi in FIELDS:
+                    all_course_ave[fi] += averages_by_fi_by_c[course][fi]
+    
                 sums_by_fi = sums_by_fi_by_c[course]
                 averages_by_fi = averages_by_fi_by_c[course]
                 csvwriter.writerow([course] + [averages_by_fi[fi] for fi in FIELDS])
+            #writing overall average
+            for fi in FIELDS:
+                all_course_ave[fi] = round(1.0*all_course_ave[fi]/number_course, 2)
+                
+            csvwriter.writerow(["Overall average"]+[all_course_ave[fi] for fi in FIELDS])
+            
+
+               
+            
+                
+        
+        

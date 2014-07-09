@@ -4,7 +4,6 @@
 import csv
 
 INPUTFILENAMES = [
-    '../Overall.csv',
     '../split_by_course/HarvardX_CB22x_2013_Spring.csv',
     '../split_by_course/HarvardX_CS50x_2012.csv',
     '../split_by_course/HarvardX_ER22x_2013_Spring.csv',
@@ -29,11 +28,10 @@ QUOTECHAR = '"'
 OUTPUTFOLDER = 'summed_by_country'
 
 FIELDS = ['viewed', 'explored', 'certified', 'grade', 'nevents', 'ndays_act', 'nplay_video', 'nchapters', 'nforum_posts']
-FIELDS_AVG = ['viewed', 'explored', 'certified', 'grade', 'events', 'active days', 'video play', 'chapters', 'forum posts']
+FIELDS_NAME = ['Viewed', 'Explored', 'Certified', 'Grade', 'Events', 'Active days', 'Video plays', 'Chapters', 'Forum posts']
 
 
 COUNTRY = 'final_cc_cname_DI'
-
 
 for inputfilename in INPUTFILENAMES:
     with open(inputfilename, 'rb') as csv_in:
@@ -59,7 +57,7 @@ for inputfilename in INPUTFILENAMES:
                     num = float(num)
                     sums_by_fi[fi] += num
                     counts_by_fi[fi] += 1
-            #print country, sums_by_fi, counts_by_fi
+            
 
 
         ## Prevent divide by zero errors when computing average
@@ -74,13 +72,25 @@ for inputfilename in INPUTFILENAMES:
 
         outputfilename = OUTPUTFOLDER + '/' + inputfilename.split('/')[-1]
 
-        #print sums_by_fi_by_c
-        #print counts_by_fi_by_c
 
         with open(outputfilename, 'wb') as csv_out:
             csvwriter = csv.writer(csv_out, delimiter=DELIMITER, quotechar=QUOTECHAR, quoting=csv.QUOTE_MINIMAL)
-            csvwriter.writerow(['Country'] + FIELDS_AVG)
+            csvwriter.writerow(['Country'] + FIELDS_NAME)
+            all_country_ave = {}
+            number_country = 0
+            for fi in FIELDS:
+                all_country_ave[fi] = 0;
+                
             for country in sums_by_fi_by_c:
+                number_country +=1
+                for fi in FIELDS:
+                    all_country_ave[fi] += averages_by_fi_by_c[country][fi]
+                    
                 sums_by_fi = sums_by_fi_by_c[country]
                 averages_by_fi = averages_by_fi_by_c[country]
                 csvwriter.writerow([country] + [averages_by_fi[fi] for fi in FIELDS])
+            #writing overall average    
+            for fi in FIELDS:
+                all_country_ave[fi] = round(1.0*all_country_ave[fi]/number_country, 2)
+                
+            csvwriter.writerow(["Overall average"]+[all_country_ave[fi] for fi in FIELDS])

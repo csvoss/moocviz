@@ -1,4 +1,4 @@
-Country,viewed,explored,certified,grade,events,active days,video play,chapters,forum posts
+Country,Viewed,Explored,Certified,Grade,Events,Active days,Video plays,Chapters,Forum posts
 Canada,0.62,0.11,0.08,0.08,669.3,6.1,98.66,3.34,0.0
 Other South Asia,0.6,0.1,0.07,0.07,518.17,5.52,108.3,3.13,0.0
 Bangladesh,0.44,0.06,0.02,0.04,241.4,3.44,48.48,2.76,0.0
@@ -33,3 +33,4 @@ United Kingdom,0.62,0.13,0.1,0.1,703.14,6.34,114.18,3.55,0.0
 Colombia,0.69,0.16,0.12,0.13,964.21,8.2,175.85,3.97,0.0
 Greece,0.59,0.11,0.07,0.08,683.83,6.01,88.38,3.65,0.0
 Japan,0.72,0.07,0.02,0.03,335.82,3.99,61.77,2.5,0.0
+Overall average,0.6,0.1,0.07,0.08,584.14,5.83,102.25,3.16,0.0
