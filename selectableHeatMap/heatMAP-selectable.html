@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html>
+<head>
+    <title>MOOCdb Heat Map</title>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+	<!--script src="d3.v3.min.js"></script>
+	
+	<script src="jquery-ui-1.10.3.min.js"></script>
+	<script src="jquery-1.10.2.min.js"></script-->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+   
+	<!--link rel="stylesheet" type="text/css" href="visualization-site/templates/visuals/tooltip.css">
+	
+	<link rel="stylesheet" type="text/css" href="visualization-site/static/css/bootstrap-3.0.0.min.css"-->
+	<link rel="stylesheet" type="text/css" href="bootstrap-3.0.0/dist/css/bootstrap.min.css">
+   
+</head>
+<style>
+	
+	
+      svg *::selection {
+         background : transparent;
+      }
+     
+      svg *::-moz-selection {
+         background:transparent;
+      } 
+     
+      svg *::-webkit-selection {
+         background:transparent;
+      }
+      rect.selection {
+        stroke          : #333;
+        stroke-dasharray: 4px;
+        stroke-opacity  : 0.5;
+        fill            : transparent;
+      }
+
+      rect.cell-border {
+        stroke: white;
+        stroke-width:0.9px;   
+      }
+
+      rect.cell-selected {
+        stroke: rgb(51,102,153);
+        stroke-width:0.5px;   
+      }
+
+      rect.cell-hover {
+        stroke: #F00;
+        stroke-width:0.3px;   
+      }
+
+      text.mono {
+        font-size: 9pt;
+        font-family: Consolas, courier;
+        fill: #aaa;
+      }
+
+      text.text-selected {
+        fill: #000;
+      }
+
+      text.text-highlight {
+        fill: #c00;
+      }
+      text.text-hover {
+        fill: #00C;
+      }
+      #tooltip {
+        position: absolute;
+        width: 200px;
+        height: auto;
+        padding: 10px;
+        background-color: white;
+        -webkit-border-radius: 10px;
+        -moz-border-radius: 10px;
+        border-radius: 10px;
+        -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+        -moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+        box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+        pointer-events: none;
+      }
+
+      #tooltip.hidden {
+        display: none;
+      }
+
+      #tooltip p {
+        margin: 0;
+        font-family: sans-serif;
+        font-size: 12px;
+        line-height: 20px;
+      }
+	
+body {
+	font-family: helveticaneue, sans-serif;
+	font-size: 11px;
+}
+
+.dot {
+	stroke: #000;
+}
+	
+.label{
+	font-size: 12px;
+	font-family:serif;
+}
+
+.axis path,
+.axis line {
+	fill: none;
+	stroke: #000;
+	shape-rendering: crispEdges;
+}
+	
+.cell{
+	pointer-events:all;
+	fill:black;
+}
+
+.cell:hover{
+	fill:red;
+}
+
+#chart{
+	display: block;
+	clear: both;	
+}
+	
+#rightSide{
+	padding-top: 50px;
+	display:inline;
+	width:40%;
+	height: 100%;
+	float:left;	
+}
+
+#leftSide{
+	display:inline;
+	width:60%;
+	height:100%;
+	float:left;	
+}
+
+.choiceLabel{
+	margin-left: 10px;
+	font-size: 20;
+	width: 75px;
+}
+.choice{
+	width:150px;
+}
+
+#textInfo{
+	padding: 6px;
+	height: 120px;
+	background-color: rgb(244, 245, 210);
+	width: 300px;
+	font-size: 14px;
+}
+#choiceField{
+	width:800px;
+	position: absolute;
+	display: block;
+	clear:both;
+}
+
+.divChoice{
+	float:left;
+	width:30%;
+}
+
+#intro{
+	position:absolute;
+	top: 300px;
+	left: 590px;
+	font-size: 20px;
+	text-align: center;
+}
+	
+</style>
+<body>
+
+<h1 style="padding-left:150px;">MOOCdb Heat Map</h1>
+<div id="chart">
+	<div id="leftSide">
+		<div id="heatTable"></div>
+	</div>
+	<div id="rightSide">
+		      <div id="problem_info" style="border: solid 2px; border-radius: 6px; width: 300px;height:330px; padding: 4px; margin: 10px; clear:both">	
+            <h4 >Range y:
+				  <label id="rangeY"></label></h4>
+			<h4 >Range x:
+				  <label id="rangeX"></label></h4>
+            <table class="table table-bordered" id="problem_data">
+				<tr>
+                    <td class="bold-td">Number of students</td>
+                    <td id="students"></td>
+                </tr>
+                <tr>
+                    <td class="bold-td">Average number of video play</td>
+                    <td id="videos_ave"></td>
+                </tr>
+                <tr>
+                    <td class="bold-td">Average grade</td>
+                    <td id="grade_ave"></td>
+                </tr>
+                <tr>
+                    <td class="bold-td">Average number of forum posts</td>
+                    <td id="posts_ave"></td>
+                </tr>
+                <tr>
+                    <td class="bold-td">Average number of events</td>
+                    <td id="events_ave"></td>
+                </tr>
+                <tr>
+                    <td class="bold-td">Average number of chapters</td>
+                    <td id="chapters_ave"></td>
+                </tr>
+                <tr>
+                    <td class="bold-td">Average number of active days</td>
+                    <td id="days_ave"></td>
+                </tr>
+            </table>
+            <hr>
+		</div>
+		
+		<div id="choiceField">
+			<label class="choiceLabel"> X dimension:</label>
+			<select class="choice" id="chosen_dim_x" name="data_view" onchange="render()"> 
+				<option value="ndays_act">Number of active days</option>
+				<option value="nevents">Number of events</option>
+				<option value="nplay_video">Number of video plays</option>
+				<option value="nchapters">Number of chapters</option>
+				<option value="nforum_posts">Number of forum posts</option>
+			 </select>
+			<input type="radio" checked="checked" name="scaleX" value="linearScale" onchange="render()">Linear
+			<input type="radio" name="scaleX" value="logScale" onchange="render()">Log<br/>
+			<label class="choiceLabel"> Y dimension: </label>
+			<select class="choice" id="chosen_dim_y" name="data_view" onchange="render()"> 
+				<option value="grade">Grade</option>
+				<option value="ndays_act">Number of active days</option>
+				<option value="nevents">Number of events</option>
+				<option value="nplay_video">Number of video plays</option>
+				<option value="nchapters">Number of chapters</option>
+				<option value="nforum_posts">Number of forum posts</option>
+				             
+			 </select>
+			<input type="radio" checked="checked" name="scaleY" value="linearScale" onchange="render()">Linear
+			<input type="radio" name="scaleY" value="logScale" onchange="render()">Log<br/>
+		</div>
+		
+	</div>
+</div>
+
+
+<!-- The script which makes the actual chart. -->
+<script>
+
+//GLOBAL VARS
+var cellX, cellY, ROW, COL, COLORRANGE, PEAKS, maxX, maxY;
+var colorList =[ "#f5f5f5", "#FFE850","#FFC946","#F4333E","#D74B74", "#AF0A3F","#610005"];
+	
+//HUMAN READABLE
+readable = {ndays_act:'Number of active days', nevents:'Number of events', nplay_video:'Number of video plays',nchapters:'Number of chapters',nforum_posts:'Number of forum', grade:'Grade', nforum_posts:'Number of forum posts'}
+
+	
+//adjusting size of heat table
+var margin = {top: 50, right: 20, bottom: 0, left: 70},
+		width = 560 - margin.left - margin.right,
+		height = 500 - margin.top - margin.bottom;
+
+d3.select("#heatTable").html("");
+var heatTable = d3.select("#heatTable").append("svg")
+		.attr("id", "heatSVG")
+		.attr("width", width + margin.left + margin.right)
+		.attr("height", height + margin.top + margin.bottom)
+		.append("g")
+		.attr("transform", "translate(" + margin.left + ", " + margin.top + ")");
+	
+//color legend of heat table
+	var legendWidth = 40;
+	var legendHeight = 20;
+	var legend = d3.select("#heatSVG")
+			.append("g")
+			.attr("width", legendWidth*10 )
+			.attr("height", legendHeight*2)
+			.attr("transform","translate("+margin.left+","+(height+margin.top/2)+")");
+	
+	
+/////////whenever user changes choice field, render function will be called//////////
+    function render() {
+		//clear all visialazition
+		heatTable.html("");
+	    legend.html("");
+		
+	
+		var dimX = document.getElementById("chosen_dim_x").value;
+		var dimY = document.getElementById("chosen_dim_y").value;
+		var scaleX =document.querySelector('input[name="scaleX"]:checked').value;
+		var scaleY = document.querySelector('input[name="scaleY"]:checked').value;
+		
+		console.log(scaleX+"-"+dimX+"-"+scaleY+"-"+dimY+".csv");
+	
+		//getting input file
+		var cellsFile = "heatMap_files/"+scaleX+"-"+dimX+"-"+scaleY+"-"+dimY+".csv";
+		var matrixFile =  "heatMap_files/table-"+scaleX+"-"+dimX+"-"+scaleY+"-"+dimY+".csv";
+		
+		d3.csv(matrixFile, function(error, data){
+			data.forEach(function(d) {
+				maxX = +d.maxX;
+				maxY = +d.maxY;
+				cellX = +d.cellWidth;
+				cellY = +d.cellHeight;
+				ROW = +d.matrixRow;
+				COL = + d.matrixCol;
+				var peaks = d.peaks;
+				PEAKS = peaks.replace(/[()\s]/g,'').split(",");
+				for ( i in PEAKS){
+					PEAKS[i] = parseFloat(PEAKS[i]);
+				console.log(cellX*COL, cellY*ROW);
+					
+					
+				}
+			});
+			
+		});
+		
+		
+		//loading data
+		d3.csv(cellsFile, 
+			   function(d) {
+				   return {
+					   x:			+d.colNum,
+					   y:			+d.rowNum,
+					   students: 	+d.totalStudents,
+					   nplay_video_ave: +d.nplay_video_ave,
+					   grade_ave:	+d.grade_ave,
+					   nforum_posts_ave:+d.nforum_posts_ave,
+					   nevents_ave:		+d.nevents_ave,
+					   nchapters_ave:	+d.nchapters_ave,
+					   ndays_act_ave:	+d.ndays_act_ave,
+		
+				   };
+			   },
+		
+		   function(error, data) {
+			   
+			   var colorScale = d3.scale.linear()
+			   .domain( PEAKS)
+			   .range(colorList);
+			   
+			   
+			   Heat = heatTable.append("g").attr("class","g3")
+			   .selectAll(".cellg")
+			   .data(data,function(d){return d.y+":"+d.x;})
+			   .enter()
+			   .append("rect")
+			    .attr("x", function(d) { return (d.x) * cellX; })
+        .attr("y", function(d) { if ((d.y) * cellY>1000){console.log("fishy",(d.y), cellY);} return (d.y) * cellY; })
+			   .attr("width", cellX-0.7 )
+			   .attr("height", cellY-0.7)
+			   .attr("data", function(d) {return d})
+			   .style("fill", function(d){ return colorScale(d.students)})
+			   .attr("class", function(d){return "cell cell-border cr"+(d.row-1)+" cc"+(d.col-1);});
+			   
+
+
+  var sa=d3.select(".g3")
+      .on("mousedown", function() {
+          if( !d3.event.altKey) {
+             d3.selectAll(".cell-selected").classed("cell-selected",false);
+         
+          }
+         var p = d3.mouse(this);
+         sa.append("rect")
+         .attr({
+             rx      : 0,
+             ry      : 0,
+             class   : "selection",
+             x       : p[0],
+             y       : p[1],
+             width   : 1,
+             height  : 1
+         })
+      })
+      .on("mousemove", function() {
+         var s = sa.select("rect.selection");
+      
+         if(!s.empty()) {
+             var p = d3.mouse(this),
+                 d = {
+                     x       : parseInt(s.attr("x"), 10),
+                     y       : parseInt(s.attr("y"), 10),
+                     width   : parseInt(s.attr("width"), 10),
+                     height  : parseInt(s.attr("height"), 10)
+                 },
+                 move = {
+                     x : p[0] - d.x,
+                     y : p[1] - d.y
+                 }
+             ;
+      
+             if(move.x < 1 || (move.x*2<d.width)) {
+                 d.x = p[0];
+                 d.width -= move.x;
+             } else {
+                 d.width = move.x;       
+             }
+      
+             if(move.y < 1 || (move.y*2<d.height)) {
+                 d.y = p[1];
+                 d.height -= move.y;
+             } else {
+                 d.height = move.y;       
+             }
+             s.attr(d);
+      
+                 // deselect all temporary selected state objects
+             d3.selectAll('.cell-selection.cell-selected').classed("cell-selected", false);
+             
+
+             d3.selectAll('.cell').filter(function(cell_d, i) {
+                 if(
+                     !d3.select(this).classed("cell-selected") && 
+                         // inner circle inside selection frame
+                     (this.x.baseVal.value)+cellX >= d.x && (this.x.baseVal.value)<=d.x+d.width && 
+                     (this.y.baseVal.value)+cellY >= d.y && (this.y.baseVal.value)<=d.y+d.height
+                 ) {
+      
+                     d3.select(this)
+                     .classed("cell-selection", true)
+                     .classed("cell-selected", true);
+
+               
+             
+                 }
+             });
+         }
+      })
+      .on("mouseup", function() {
+            // remove selection frame
+         sa.selectAll("rect.selection").remove();
+		  var grade = 0,
+			  chapters = 0,
+			  days = 0,
+			  events = 0,
+			  posts = 0,
+			  videos = 0,
+			  students = 0,
+			  xmin = COL,
+			  ymin = ROW,
+			  xmax = 0,
+			  ymax = 0;
+	
+		  
+      
+             // remove temporary selection marker class
+		  var cells = d3.selectAll('.cell-selection')[0]
+		  for (i in cells){
+			  if ( i != "parentNode"){
+				  var d = cells[i].__data__
+				  grade += d.grade_ave;
+				  chapters += d.nchapters_ave;
+				  days += d.ndays_act_ave;
+				  events += d.nevents_ave;
+				  posts += d.nforum_posts_ave;
+				  videos += d.nplay_video_ave;
+				  students += d.students;
+				  xmax = Math.max( xmax, d.x);
+				  xmin = Math.min( xmin, d.x);
+				  ymax = Math.max( ymax, d.y);
+				  ymin = Math.min( ymin, d.y);
+				  console.log(ymin, ymax+1,cellY,ymin*cellY );
+			$("#rangeY").html( "&nbsp&nbsp" +Y.invert(ymin*cellY).toFixed(1)+"&nbsp-&nbsp"+Y.invert((ymax+1)*cellY).toFixed(1));
+		    $("#rangeX").html( "&nbsp&nbsp" +X.invert(xmin*cellX).toFixed(1)+"&nbsp-&nbsp"+X.invert((xmax+1)*cellX).toFixed(1));
+			$("#students").html(students);	  
+			$("#videos_ave").html( (videos/students).toFixed(1));
+		    $("#grade_ave").html( (grade/students).toFixed(2));
+			$("#posts_ave").html( (posts/students).toFixed(1));
+			$("#events_ave").html( (events/students).toFixed(1));
+			$("#chapters_ave").html( (chapters/students).toFixed(1));
+			$("#days_ave").html( (days/students).toFixed(1));
+	
+	
+			  }
+		  }
+	
+		  
+         d3.selectAll('.cell-selection').classed("cell-selection", false);
+         d3.selectAll(".text-selection").classed("text-selection",false);
+      });
+
+			   
+			//heatMap legend   
+			legendEnter = legend.selectAll(".legend")
+					.data(PEAKS)
+					.enter().append("g")
+					.attr("class", "legend");
+			
+			legendEnter.append("text")
+			.text("Number of students:")
+			.attr("font-size", 14)
+			.attr("font-family", "serif")
+			.attr("y", legendHeight/4) ;
+			
+			legendEnter.append("rect")
+					.attr("x", function(d, i) { return 150+legendWidth * i; })
+					.attr("y",3)
+					.attr("width", legendWidth)
+					.attr("height", legendHeight)
+					.style("fill", function(d, i) { return colorList[i]; });
+
+			legendEnter.append("text")
+					.attr("class", "label")
+					.text(function(d) { return d; })
+					.attr("width", legendWidth)
+					.attr("x", function(d, i) { return 155+legendWidth * i; });
+			   
+		   //heatMap axis
+			 if ( scaleX == "linearScale"){			
+				var X = d3.scale.linear()
+						.domain([0, maxX])
+						.range([0, COL*cellX]);
+			}else{ //log scale
+				var X = d3.scale.log()
+						.domain([1, maxX])
+						.range([0, COL*cellX]);
+			}
+			//---axis Y
+			if ( scaleY == "linearScale"){			
+				var Y = d3.scale.linear()
+						.domain([0, maxY])
+						.range([0, ROW*cellY]);
+			}else{  // log scale
+				var Y = d3.scale.log()
+							.domain([1, maxY])
+							.range([0, ROW*cellY]);
+			}
+			
+
+			//Creating axis labels	
+			var xAxis = d3.svg.axis()
+					.scale(X)
+					.orient("top")
+			        .ticks(5);
+            heatTable.append("g")
+                    .attr("class", "x axis")
+                    .call(xAxis)
+                    .append("text")
+                    .attr("class", "label")
+                    .attr("x", width/2+10)
+                    .attr("y", -margin.top+15)
+                    .style("text-anchor", "end")
+    				.text(readable[d3.select("#chosen_dim_x")[0][0].value]);
+
+			var yAxis = d3.svg.axis()
+					.scale(Y)
+					.orient("left")
+			        .ticks(5);
+            heatTable.append("g")
+                    .attr("class", "y axis")
+                    .call(yAxis)
+                    .append("text")
+                    .attr("class", "label")
+                    .attr("x", -170)
+                    .attr("y", -margin.left+15)
+					.attr("transform", "rotate(-90)")
+                    .style("text-anchor", "end")
+    				.text(readable[d3.select("#chosen_dim_y")[0][0].value]);  
+			   
+	});
+	}
+					
+    render();
+</script>
+</body>
+</html>
